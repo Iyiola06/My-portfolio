@@ -59,12 +59,6 @@ export default function PortfolioPage() {
           </div>
 
           <div className="flex items-center gap-4">
-            <Link href="/login">
-              <button className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full border border-[#2A2A25] hover:border-[#d39e17] hover:text-[#d39e17] transition-all text-xs font-mono uppercase tracking-wider">
-                <Terminal size={14} />
-                Admin
-              </button>
-            </Link>
             <a href="#contact">
               <button className="hidden md:inline-flex bg-[#d39e17] hover:bg-[#e5b02b] text-[#0A0A0A] px-5 py-2.5 rounded-md font-bold text-sm transition-all shadow-[0_0_15px_-3px_rgba(211,158,23,0.3)] hover:shadow-[0_0_20px_-3px_rgba(211,158,23,0.5)]">
                 Let&apos;s Talk
@@ -87,7 +81,7 @@ export default function PortfolioPage() {
             <a href="#work" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-gray-300 hover:text-[#d39e17] transition-colors text-sm font-medium">Work</a>
             <a href="#process" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-gray-300 hover:text-[#d39e17] transition-colors text-sm font-medium">Process</a>
             <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-gray-300 hover:text-[#d39e17] transition-colors text-sm font-medium">Contact</a>
-            <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-gray-300 hover:text-[#d39e17] transition-colors text-sm font-medium">Admin</Link>
+
             <a href="#contact" onClick={() => setMobileMenuOpen(false)}>
               <button className="w-full mt-2 bg-[#d39e17] hover:bg-[#e5b02b] text-[#0A0A0A] px-5 py-2.5 rounded-md font-bold text-sm transition-all">Let&apos;s Talk</button>
             </a>
