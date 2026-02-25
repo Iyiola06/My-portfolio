@@ -403,7 +403,7 @@ export default function PortfolioPage() {
             <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {submitStatus === 'success' && (
                 <div className="md:col-span-2 p-4 bg-green-900/20 border border-green-900/30 text-green-400 rounded-md text-center">
-                  Message sent successfully! I'll get back to you soon.
+                  Message sent successfully! I&apos;ll get back to you soon.
                 </div>
               )}
               {submitStatus === 'error' && (
