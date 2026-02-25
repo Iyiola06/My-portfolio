@@ -1,11 +1,11 @@
 import React from 'react';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
-import { createClient } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase/server';
 import BlogTable from '@/components/admin/BlogTable';
 
 export default async function BlogPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { data: posts } = await supabase
     .from('blog_posts')
@@ -13,9 +13,9 @@ export default async function BlogPage() {
     .order('created_at', { ascending: false });
 
   const totalPosts = posts?.length || 0;
-  const publishedCount = posts?.filter(p => p.status === 'Published').length || 0;
-  const draftCount = posts?.filter(p => p.status === 'Draft').length || 0;
-  const totalViews = posts?.reduce((sum, p) => sum + (p.views || 0), 0) || 0;
+  const publishedCount = posts?.filter((p: any) => p.status === 'Published').length || 0;
+  const draftCount = posts?.filter((p: any) => p.status === 'Draft').length || 0;
+  const totalViews = posts?.reduce((sum: number, p: any) => sum + (p.views || 0), 0) || 0;
 
   return (
     <div className="space-y-8">

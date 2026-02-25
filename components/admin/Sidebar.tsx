@@ -7,7 +7,7 @@ import { LayoutDashboard, FolderOpen, FileText, BarChart2, Settings, LogOut, Ter
 import { clsx } from 'clsx';
 
 import { useRouter } from 'next/navigation';
-import { createBrowserSupabaseClient } from '@/lib/supabase';
+import { createBrowserSupabaseClient } from '@/lib/supabase/client';
 
 const navItems = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },

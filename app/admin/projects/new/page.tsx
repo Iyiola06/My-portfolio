@@ -4,7 +4,8 @@ import React, { useState, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Save, Upload, Image as ImageIcon, X, Globe, Github, Code, Layout, Type, Loader2, Check } from 'lucide-react';
-import { createBrowserSupabaseClient } from '@/lib/supabase';
+import { createBrowserSupabaseClient } from '@/lib/supabase/client';
+import Image from 'next/image';
 
 export default function NewProjectPage() {
   const [activeTab, setActiveTab] = useState('content');
@@ -187,8 +188,8 @@ export default function NewProjectPage() {
                   type="button"
                   onClick={() => setActiveTab(tab.toLowerCase().split(' ')[0])}
                   className={`px-6 py-3 text-sm font-medium border-r border-[#2A2A25] transition-colors ${activeTab === tab.toLowerCase().split(' ')[0]
-                      ? 'bg-[#141414] text-[#d39e17] border-t-2 border-t-[#d39e17]'
-                      : 'text-gray-400 hover:text-white hover:bg-[#141414]'
+                    ? 'bg-[#141414] text-[#d39e17] border-t-2 border-t-[#d39e17]'
+                    : 'text-gray-400 hover:text-white hover:bg-[#141414]'
                     }`}
                 >
                   {tab}

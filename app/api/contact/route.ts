@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const supabase = createClient();
+        const supabase = await createClient();
 
         const { error } = await supabase.from('messages').insert({
             name,

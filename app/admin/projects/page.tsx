@@ -1,11 +1,11 @@
 import React from 'react';
 import Link from 'next/link';
 import { Plus, Eye, CheckCircle, Clock, Filter } from 'lucide-react';
-import { createClient } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase/server';
 import ProjectsTable from '@/components/admin/ProjectsTable';
 
 export default async function ProjectsPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { data: projects } = await supabase
     .from('projects')
@@ -13,9 +13,9 @@ export default async function ProjectsPage() {
     .order('created_at', { ascending: false });
 
   const totalProjects = projects?.length || 0;
-  const publishedCount = projects?.filter(p => p.status === 'Published').length || 0;
-  const draftCount = projects?.filter(p => p.status === 'Draft').length || 0;
-  const categoriesCount = new Set(projects?.map(p => p.category)).size;
+  const publishedCount = projects?.filter((p: any) => p.status === 'Published').length || 0;
+  const draftCount = projects?.filter((p: any) => p.status === 'Draft').length || 0;
+  const categoriesCount = new Set(projects?.map((p: any) => p.category)).size;
 
   return (
     <div className="space-y-8">
