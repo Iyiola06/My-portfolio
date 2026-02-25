@@ -6,6 +6,9 @@ import { usePathname } from 'next/navigation';
 import { LayoutDashboard, FolderOpen, FileText, BarChart2, Settings, LogOut, Terminal } from 'lucide-react';
 import { clsx } from 'clsx';
 
+import { useRouter } from 'next/navigation';
+import { createBrowserSupabaseClient } from '@/lib/supabase';
+
 const navItems = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
   { name: 'Projects', href: '/admin/projects', icon: FolderOpen },
@@ -16,6 +19,14 @@ const navItems = [
 
 export default function AdminSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const supabase = createBrowserSupabaseClient();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push('/login');
+    router.refresh();
+  };
 
   return (
     <aside className="fixed inset-y-0 left-0 z-50 w-64 bg-[#0F0F0A] border-r border-[#1a1a15] flex flex-col transition-transform duration-300 ease-in-out transform -translate-x-full md:translate-x-0">
@@ -66,13 +77,13 @@ export default function AdminSidebar() {
             <span className="text-xs text-gray-500">Admin</span>
           </div>
         </div>
-        <Link
-          href="/login"
+        <button
+          onClick={handleLogout}
           className="flex items-center gap-2 w-full px-3 py-2 text-xs font-medium text-red-400 hover:text-red-300 hover:bg-red-900/10 rounded transition-colors"
         >
           <LogOut size={14} />
           Sign Out
-        </Link>
+        </button>
       </div>
     </aside>
   );

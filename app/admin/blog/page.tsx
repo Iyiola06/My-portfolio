@@ -1,37 +1,22 @@
-'use client';
-
 import React from 'react';
-import { FileText, Plus, Edit, Trash2, Eye } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import Link from 'next/link';
+import { createClient } from '@/lib/supabase';
+import BlogTable from '@/components/admin/BlogTable';
 
-const posts = [
-  {
-    id: 1,
-    title: 'Building Scalable Systems with Next.js',
-    category: 'Engineering',
-    status: 'Published',
-    date: 'Oct 15, 2023',
-    views: 1240,
-  },
-  {
-    id: 2,
-    title: 'The Future of Web Development: AI Integration',
-    category: 'Opinion',
-    status: 'Draft',
-    date: 'Nov 02, 2023',
-    views: 0,
-  },
-  {
-    id: 3,
-    title: 'Optimizing React Performance',
-    category: 'Tutorial',
-    status: 'Published',
-    date: 'Sep 28, 2023',
-    views: 856,
-  },
-];
+export default async function BlogPage() {
+  const supabase = createClient();
 
-export default function BlogPage() {
+  const { data: posts } = await supabase
+    .from('blog_posts')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  const totalPosts = posts?.length || 0;
+  const publishedCount = posts?.filter(p => p.status === 'Published').length || 0;
+  const draftCount = posts?.filter(p => p.status === 'Draft').length || 0;
+  const totalViews = posts?.reduce((sum, p) => sum + (p.views || 0), 0) || 0;
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -48,57 +33,22 @@ export default function BlogPage() {
         </Link>
       </div>
 
-      {/* Posts Table */}
-      <div className="bg-[#141414] border border-[#2A2A25] rounded-lg overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-[#1a1a15] text-gray-400 uppercase text-xs font-medium border-b border-[#2A2A25]">
-              <tr>
-                <th className="px-6 py-4">Title</th>
-                <th className="px-6 py-4">Category</th>
-                <th className="px-6 py-4">Status</th>
-                <th className="px-6 py-4">Date</th>
-                <th className="px-6 py-4">Views</th>
-                <th className="px-6 py-4 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#2A2A25]">
-              {posts.map((post) => (
-                <tr key={post.id} className="hover:bg-[#1a1a15]/50 transition-colors group">
-                  <td className="px-6 py-4 font-medium text-white">{post.title}</td>
-                  <td className="px-6 py-4 text-gray-300">{post.category}</td>
-                  <td className="px-6 py-4">
-                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium border ${
-                      post.status === 'Published' ? 'bg-green-900/20 text-green-400 border-green-900/30' :
-                      'bg-yellow-900/20 text-yellow-400 border-yellow-900/30'
-                    }`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${
-                        post.status === 'Published' ? 'bg-green-400' : 'bg-yellow-400'
-                      }`}></span>
-                      {post.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-gray-400 font-mono text-xs">{post.date}</td>
-                  <td className="px-6 py-4 text-gray-400 font-mono text-xs">{post.views}</td>
-                  <td className="px-6 py-4 text-right">
-                    <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button className="p-1.5 text-gray-400 hover:text-white hover:bg-[#2A2A25] rounded transition-colors">
-                        <Eye size={16} />
-                      </button>
-                      <button className="p-1.5 text-gray-400 hover:text-[#d39e17] hover:bg-[#d39e17]/10 rounded transition-colors">
-                        <Edit size={16} />
-                      </button>
-                      <button className="p-1.5 text-gray-400 hover:text-red-400 hover:bg-red-900/20 rounded transition-colors">
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {[
+          { label: 'Total Posts', value: totalPosts.toString().padStart(2, '0'), color: 'text-blue-400' },
+          { label: 'Published', value: publishedCount.toString().padStart(2, '0'), color: 'text-green-400' },
+          { label: 'Drafts', value: draftCount.toString().padStart(2, '0'), color: 'text-yellow-400' },
+          { label: 'Total Views', value: totalViews.toLocaleString(), color: 'text-purple-400' },
+        ].map((stat, idx) => (
+          <div key={idx} className="bg-[#141414] border border-[#2A2A25] p-5 rounded-lg hover:border-[#d39e17]/30 transition-colors">
+            <p className="text-gray-400 text-xs uppercase tracking-wider font-medium">{stat.label}</p>
+            <p className={`text-2xl font-bold mt-1 font-mono ${stat.color}`}>{stat.value}</p>
+          </div>
+        ))}
       </div>
+
+      <BlogTable initialPosts={posts || []} />
     </div>
   );
 }

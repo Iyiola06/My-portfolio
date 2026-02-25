@@ -1,14 +1,55 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Save, Type, Code, Layout, Image as ImageIcon, X } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { ArrowLeft, Save, Loader2, Check, Type, Code, Layout, X } from 'lucide-react';
+import { createBrowserSupabaseClient } from '@/lib/supabase';
 
 export default function NewBlogPostPage() {
-  const [activeTab, setActiveTab] = useState('write');
+  const [activeTab, setActiveTab] = useState('content');
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+  // Form State
+  const [title, setTitle] = useState('');
+  const [category, setCategory] = useState('Engineering');
+  const [status, setStatus] = useState('Draft');
+  const [content, setContent] = useState(`# Starting your journey with Next.js\n\nNext.js is a powerful framework...`);
+
+  const router = useRouter();
+  const supabase = createBrowserSupabaseClient();
+
+  const handleSubmit = async (e: React.FormEvent, finalStatus?: string) => {
+    e.preventDefault();
+    setLoading(true);
+    const useStatus = finalStatus || status;
+
+    try {
+      const { error } = await supabase.from('blog_posts').insert({
+        title,
+        category,
+        content,
+        status: useStatus,
+      });
+
+      if (error) throw error;
+
+      setSuccess(true);
+      setTimeout(() => {
+        router.push('/admin/blog');
+        router.refresh();
+      }, 1500);
+
+    } catch (err: any) {
+      alert('Error saving post: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="max-w-5xl mx-auto">
+    <div className="max-w-7xl mx-auto">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div className="flex items-center gap-4">
@@ -16,163 +57,117 @@ export default function NewBlogPostPage() {
             <ArrowLeft size={20} />
           </Link>
           <div>
-            <h1 className="text-2xl font-bold text-white tracking-tight">New Blog Post</h1>
-            <p className="text-gray-400 text-sm">Share your thoughts and expertise.</p>
+            <h1 className="text-2xl font-bold text-white tracking-tight">Create New Post</h1>
+            <p className="text-gray-400 text-sm">Write a new article for your blog.</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <button className="px-4 py-2 text-sm font-medium text-gray-400 hover:text-white transition-colors">
+          <Link href="/admin/blog" className="px-4 py-2 text-sm font-medium text-gray-400 hover:text-white transition-colors">
             Discard
-          </button>
-          <button className="px-4 py-2 text-sm font-medium bg-[#141414] border border-[#2A2A25] rounded-md text-white hover:bg-[#1a1a15] transition-colors flex items-center gap-2">
-            <Save size={16} />
+          </Link>
+          <button
+            onClick={(e) => handleSubmit(e, 'Draft')}
+            disabled={loading || success}
+            className="px-4 py-2 text-sm font-medium bg-[#141414] border border-[#2A2A25] rounded-md text-white hover:bg-[#1a1a15] transition-colors flex items-center gap-2 disabled:opacity-50"
+          >
+            {loading ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
             Save Draft
           </button>
-          <button className="px-4 py-2 text-sm font-bold bg-[#d39e17] text-[#0A0A0A] rounded-md hover:bg-[#e5b02b] transition-colors shadow-[0_0_15px_-3px_rgba(211,158,23,0.3)] hover:shadow-[0_0_20px_-3px_rgba(211,158,23,0.5)]">
-            Publish Post
+          <button
+            onClick={(e) => handleSubmit(e, 'Published')}
+            disabled={loading || success}
+            className="px-4 py-2 text-sm font-bold bg-[#d39e17] text-[#0A0A0A] rounded-md hover:bg-[#e5b02b] transition-colors shadow-[0_0_15px_-3px_rgba(211,158,23,0.3)] hover:shadow-[0_0_20px_-3px_rgba(211,158,23,0.5)] flex items-center gap-2 disabled:opacity-50"
+          >
+            {success ? <Check size={16} /> : (loading ? <Loader2 size={16} className="animate-spin" /> : null)}
+            {success ? 'Post Published!' : 'Publish Post'}
           </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <form onSubmit={(e) => handleSubmit(e)} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main Content Column */}
         <div className="lg:col-span-2 space-y-6">
-          
-          <div className="space-y-2">
-            <input 
-              type="text" 
-              placeholder="Post Title" 
-              className="w-full bg-transparent border-none text-4xl font-bold text-white placeholder-gray-600 focus:ring-0 px-0"
-            />
-          </div>
-
-          {/* Tabs */}
-          <div className="flex items-center gap-4 border-b border-[#2A2A25]">
-            <button 
-              onClick={() => setActiveTab('write')}
-              className={`pb-3 text-sm font-medium transition-colors relative ${
-                activeTab === 'write' ? 'text-[#d39e17]' : 'text-gray-400 hover:text-white'
-              }`}
-            >
-              Write
-              {activeTab === 'write' && (
-                <div className="absolute bottom-0 left-0 w-full h-0.5 bg-[#d39e17]"></div>
-              )}
-            </button>
-            <button 
-              onClick={() => setActiveTab('preview')}
-              className={`pb-3 text-sm font-medium transition-colors relative ${
-                activeTab === 'preview' ? 'text-[#d39e17]' : 'text-gray-400 hover:text-white'
-              }`}
-            >
-              Preview
-              {activeTab === 'preview' && (
-                <div className="absolute bottom-0 left-0 w-full h-0.5 bg-[#d39e17]"></div>
-              )}
-            </button>
-          </div>
-
-          {/* Editor */}
-          {activeTab === 'write' ? (
-            <div className="bg-[#141414] border border-[#2A2A25] rounded-lg overflow-hidden flex flex-col min-h-[600px]">
-              {/* Toolbar */}
-              <div className="flex items-center gap-1 p-2 border-b border-[#2A2A25] bg-[#1a1a15]">
-                <button className="p-1.5 text-gray-400 hover:text-white hover:bg-[#2A2A25] rounded"><Type size={16} /></button>
-                <button className="p-1.5 text-gray-400 hover:text-white hover:bg-[#2A2A25] rounded font-bold">B</button>
-                <button className="p-1.5 text-gray-400 hover:text-white hover:bg-[#2A2A25] rounded italic">I</button>
-                <div className="w-px h-4 bg-[#2A2A25] mx-1"></div>
-                <button className="p-1.5 text-gray-400 hover:text-white hover:bg-[#2A2A25] rounded"><Code size={16} /></button>
-                <button className="p-1.5 text-gray-400 hover:text-white hover:bg-[#2A2A25] rounded"><Layout size={16} /></button>
-                <div className="w-px h-4 bg-[#2A2A25] mx-1"></div>
-                <button className="p-1.5 text-gray-400 hover:text-white hover:bg-[#2A2A25] rounded"><ImageIcon size={16} /></button>
-              </div>
-
-              <textarea 
-                className="flex-1 w-full bg-[#0A0A0A] p-6 text-gray-300 font-mono text-lg leading-relaxed focus:outline-none resize-none"
-                placeholder="Start writing your story..."
+          <div className="bg-[#141414] border border-[#2A2A25] rounded-lg p-6 space-y-6">
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-300">Blog Title</label>
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="e.g. Building Scalable Systems with Next.js"
+                className="w-full bg-[#0A0A0A] border border-[#2A2A25] rounded-md p-3 text-white focus:outline-none focus:border-[#d39e17] transition-colors placeholder-gray-600"
+                required
               />
             </div>
-          ) : (
-            <div className="bg-[#141414] border border-[#2A2A25] rounded-lg p-8 min-h-[600px] prose prose-invert max-w-none">
-              <div className="flex flex-col items-center justify-center h-full text-gray-500">
-                <p>Preview mode is not available yet.</p>
-              </div>
+          </div>
+
+          {/* Editor Tabs */}
+          <div className="bg-[#141414] border border-[#2A2A25] rounded-lg overflow-hidden flex flex-col min-h-[500px]">
+            <div className="flex border-b border-[#2A2A25] bg-[#1a1a15]">
+              {['Content'].map((tab) => (
+                <button
+                  key={tab}
+                  type="button"
+                  className="px-6 py-3 text-sm font-medium border-r border-[#2A2A25] bg-[#141414] text-[#d39e17] border-t-2 border-t-[#d39e17]"
+                >
+                  {tab}
+                </button>
+              ))}
             </div>
-          )}
+
+            {/* Toolbar */}
+            <div className="flex items-center gap-1 p-2 border-b border-[#2A2A25] bg-[#141414]">
+              <button type="button" className="p-1.5 text-gray-400 hover:text-white hover:bg-[#2A2A25] rounded"><Type size={16} /></button>
+              <button type="button" className="p-1.5 text-gray-400 hover:text-white hover:bg-[#2A2A25] rounded font-bold">B</button>
+              <button type="button" className="p-1.5 text-gray-400 hover:text-white hover:bg-[#2A2A25] rounded italic">I</button>
+              <div className="w-px h-4 bg-[#2A2A25] mx-1"></div>
+              <button type="button" className="p-1.5 text-gray-400 hover:text-white hover:bg-[#2A2A25] rounded"><Code size={16} /></button>
+              <button type="button" className="p-1.5 text-gray-400 hover:text-white hover:bg-[#2A2A25] rounded"><Layout size={16} /></button>
+            </div>
+
+            <textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              className="flex-1 w-full bg-[#0A0A0A] p-6 text-gray-300 font-mono text-sm focus:outline-none resize-none"
+              placeholder="# Write your blog content here..."
+            />
+          </div>
         </div>
 
         {/* Sidebar Column */}
         <div className="space-y-6">
-          
-          {/* Organization */}
           <div className="bg-[#141414] border border-[#2A2A25] rounded-lg p-5 space-y-4">
-            <h3 className="text-sm font-bold text-white uppercase tracking-wider">Details</h3>
-            
+            <h3 className="text-sm font-bold text-white uppercase tracking-wider">Settings</h3>
+
             <div className="space-y-2">
               <label className="block text-xs font-medium text-gray-400 uppercase">Category</label>
-              <select className="w-full bg-[#0A0A0A] border border-[#2A2A25] rounded p-2 text-sm text-white focus:outline-none focus:border-[#d39e17]">
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full bg-[#0A0A0A] border border-[#2A2A25] rounded p-2 text-sm text-white focus:outline-none focus:border-[#d39e17]"
+              >
                 <option>Engineering</option>
                 <option>Tutorial</option>
                 <option>Opinion</option>
-                <option>Career</option>
+                <option>Personal</option>
               </select>
             </div>
 
             <div className="space-y-2">
-              <label className="block text-xs font-medium text-gray-400 uppercase">Tags</label>
-              <input 
-                type="text" 
-                placeholder="Add tags..." 
-                className="w-full bg-[#0A0A0A] border border-[#2A2A25] rounded p-2 text-sm text-white focus:outline-none focus:border-[#d39e17]"
-              />
-              <div className="flex flex-wrap gap-2 mt-2">
-                {['Next.js', 'React'].map(tag => (
-                  <span key={tag} className="inline-flex items-center gap-1 px-2 py-1 rounded bg-[#2A2A25] text-xs text-gray-300 border border-[#333]">
-                    {tag}
-                    <button className="hover:text-white"><X size={12} /></button>
-                  </span>
-                ))}
-              </div>
+              <label className="block text-xs font-medium text-gray-400 uppercase">Status</label>
+              <select
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+                className={`w-full bg-[#0A0A0A] border border-[#2A2A25] rounded p-2 text-sm focus:outline-none focus:border-[#d39e17] ${status === 'Published' ? 'text-green-400' : 'text-yellow-400'
+                  }`}
+              >
+                <option value="Draft">Draft</option>
+                <option value="Published">Published</option>
+              </select>
             </div>
           </div>
-
-          {/* Cover Image */}
-          <div className="bg-[#141414] border border-[#2A2A25] rounded-lg p-5 space-y-4">
-            <h3 className="text-sm font-bold text-white uppercase tracking-wider">Cover Image</h3>
-            
-            <div className="border-2 border-dashed border-[#2A2A25] rounded-lg p-8 flex flex-col items-center justify-center text-center hover:border-[#d39e17]/50 hover:bg-[#1a1a15] transition-all cursor-pointer group">
-              <div className="w-12 h-12 rounded-full bg-[#1a1a15] flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                <ImageIcon className="text-gray-500 group-hover:text-[#d39e17]" size={24} />
-              </div>
-              <p className="text-sm text-gray-300 font-medium">Click to upload</p>
-            </div>
-          </div>
-
-          {/* SEO */}
-          <div className="bg-[#141414] border border-[#2A2A25] rounded-lg p-5 space-y-4">
-            <h3 className="text-sm font-bold text-white uppercase tracking-wider">SEO</h3>
-            
-            <div className="space-y-2">
-              <label className="block text-xs font-medium text-gray-400 uppercase">Slug</label>
-              <input 
-                type="text" 
-                placeholder="post-url-slug" 
-                className="w-full bg-[#0A0A0A] border border-[#2A2A25] rounded p-2 text-sm text-white focus:outline-none focus:border-[#d39e17]"
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <label className="block text-xs font-medium text-gray-400 uppercase">Meta Description</label>
-              <textarea 
-                rows={3}
-                placeholder="Description for search engines..." 
-                className="w-full bg-[#0A0A0A] border border-[#2A2A25] rounded p-2 text-sm text-white focus:outline-none focus:border-[#d39e17] resize-none"
-              />
-            </div>
-          </div>
-
         </div>
-      </div>
+      </form>
     </div>
   );
 }

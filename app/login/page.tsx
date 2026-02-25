@@ -1,19 +1,52 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Terminal, FolderOpen, Layers, Lock, Mail, Key, Eye, EyeOff, ShieldCheck, ArrowLeft } from 'lucide-react';
+import { Terminal, FolderOpen, Layers, Lock, Mail, Key, Eye, EyeOff, ShieldCheck, ArrowLeft, Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { createBrowserSupabaseClient } from '@/lib/supabase';
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState('admin@iyiola.dev');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const router = useRouter();
+  const supabase = createBrowserSupabaseClient();
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        setError(error.message);
+      } else {
+        router.push('/admin/projects');
+        router.refresh();
+      }
+    } catch (err) {
+      setError('An unexpected error occurred. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="flex min-h-screen w-full flex-col md:flex-row overflow-hidden bg-[#0A0A0A] text-slate-200 font-sans">
       {/* Left Column: Branding & Context */}
       <div className="relative hidden md:flex w-full md:w-[55%] flex-col justify-between p-12 lg:p-16 bg-[#0F0F0A] border-r border-[#1a1a15] overflow-hidden">
         {/* Decorative Background */}
-        <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none" 
-             style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d39e17' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")` }}>
+        <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none"
+          style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d39e17' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")` }}>
         </div>
         <div className="absolute -right-20 -bottom-20 w-96 h-96 bg-[#d39e17]/5 rounded-full blur-[100px] pointer-events-none"></div>
 
@@ -25,7 +58,7 @@ export default function LoginPage() {
             </div>
             <h1 className="text-2xl font-bold tracking-tight text-white">Iyiola Ogunjobi</h1>
           </div>
-          
+
           <div className="space-y-4">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-[#d39e17]/5 border border-[#d39e17]/10 text-[#d39e17] font-mono text-xs tracking-wider">
               <span>{'//'}</span>
@@ -85,7 +118,13 @@ export default function LoginPage() {
             <p className="text-gray-400">Please enter your credentials to authenticate.</p>
           </div>
 
-          <form className="space-y-6">
+          <form onSubmit={handleLogin} className="space-y-6">
+            {error && (
+              <div className="p-3 rounded bg-red-500/10 border border-red-500/20 text-red-500 text-sm">
+                {error}
+              </div>
+            )}
+
             {/* Email Field */}
             <div className="space-y-2 group">
               <label htmlFor="email" className="block text-sm font-medium text-gray-300">Email Address</label>
@@ -97,9 +136,11 @@ export default function LoginPage() {
                   id="email"
                   name="email"
                   type="email"
-                  defaultValue="admin@iyiola.dev"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="admin@iyiola.dev"
                   className="block w-full pl-10 pr-3 py-3 bg-transparent border-none text-white placeholder-gray-600 focus:ring-0 sm:text-sm font-mono focus:outline-none"
+                  required
                 />
               </div>
             </div>
@@ -117,8 +158,11 @@ export default function LoginPage() {
                   id="password"
                   name="password"
                   type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
                   className="block w-full pl-10 pr-10 py-3 bg-transparent border-none text-white placeholder-gray-600 focus:ring-0 sm:text-sm font-mono focus:outline-none"
+                  required
                 />
                 <button
                   type="button"
@@ -150,17 +194,20 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <Link href="/admin/projects">
-                <button
-                  type="button"
-                  className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-md text-[#0A0A0A] bg-[#d39e17] hover:bg-[#e5b02b] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#0A0A0A] focus:ring-[#d39e17] transition-all duration-200 shadow-[0_0_15px_-3px_rgba(211,158,23,0.3)] hover:shadow-[0_0_20px_-3px_rgba(211,158,23,0.5)]"
-                >
-                  <span className="absolute left-0 inset-y-0 flex items-center pl-3">
+              <button
+                type="submit"
+                disabled={loading}
+                className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-md text-[#0A0A0A] bg-[#d39e17] hover:bg-[#e5b02b] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#0A0A0A] focus:ring-[#d39e17] transition-all duration-200 shadow-[0_0_15px_-3px_rgba(211,158,23,0.3)] hover:shadow-[0_0_20px_-3px_rgba(211,158,23,0.5)] disabled:opacity-50"
+              >
+                <span className="absolute left-0 inset-y-0 flex items-center pl-3">
+                  {loading ? (
+                    <Loader2 className="h-5 w-5 animate-spin text-[#0A0A0A]/60" />
+                  ) : (
                     <ShieldCheck className="h-5 w-5 text-[#0A0A0A]/60 group-hover:text-[#0A0A0A] transition-colors" />
-                  </span>
-                  Sign In
-                </button>
-              </Link>
+                  )}
+                </span>
+                {loading ? 'Authenticating...' : 'Sign In'}
+              </button>
             </div>
           </form>
 
