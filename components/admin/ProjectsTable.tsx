@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import Image from 'next/image';
 import { Search, Filter, Eye, Edit, Trash2 } from 'lucide-react';
 import { createBrowserSupabaseClient } from '@/lib/supabase/client';
@@ -22,6 +22,8 @@ export default function ProjectsTable({ initialProjects }: { initialProjects: Pr
     const [categoryFilter, setCategoryFilter] = useState('All Categories');
     const [statusFilter, setStatusFilter] = useState('All Status');
     const [projects, setProjects] = useState(initialProjects);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
     const router = useRouter();
     const supabase = createBrowserSupabaseClient();
 
@@ -31,6 +33,26 @@ export default function ProjectsTable({ initialProjects }: { initialProjects: Pr
         const matchesStatus = statusFilter === 'All Status' || project.status === statusFilter;
         return matchesSearch && matchesCategory && matchesStatus;
     });
+
+    const totalPages = Math.max(1, Math.ceil(filteredProjects.length / itemsPerPage));
+    const paginatedProjects = filteredProjects.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
+    // Reset to page 1 when filters change
+    const handleSearchChange = (value: string) => {
+        setSearchTerm(value);
+        setCurrentPage(1);
+    };
+    const handleCategoryChange = (value: string) => {
+        setCategoryFilter(value);
+        setCurrentPage(1);
+    };
+    const handleStatusChange = (value: string) => {
+        setStatusFilter(value);
+        setCurrentPage(1);
+    };
 
     const handleDelete = async (id: string, name: string) => {
         if (confirm(`Are you sure you want to delete "${name}"?`)) {
@@ -55,14 +77,14 @@ export default function ProjectsTable({ initialProjects }: { initialProjects: Pr
                         placeholder="Search projects..."
                         className="w-full bg-[#0A0A0A] border border-[#2A2A25] rounded-md py-2 pl-10 pr-4 text-sm text-white focus:outline-none focus:border-[#d39e17] transition-colors placeholder-gray-600"
                         value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+                        onChange={(e) => handleSearchChange(e.target.value)}
                     />
                 </div>
                 <div className="flex gap-2">
                     <select
                         className="bg-[#0A0A0A] border border-[#2A2A25] rounded-md py-2 px-4 text-sm text-gray-300 focus:outline-none focus:border-[#d39e17] cursor-pointer"
                         value={categoryFilter}
-                        onChange={(e) => setCategoryFilter(e.target.value)}
+                        onChange={(e) => handleCategoryChange(e.target.value)}
                     >
                         <option>All Categories</option>
                         <option>Full Stack</option>
@@ -74,7 +96,7 @@ export default function ProjectsTable({ initialProjects }: { initialProjects: Pr
                     <select
                         className="bg-[#0A0A0A] border border-[#2A2A25] rounded-md py-2 px-4 text-sm text-gray-300 focus:outline-none focus:border-[#d39e17] cursor-pointer"
                         value={statusFilter}
-                        onChange={(e) => setStatusFilter(e.target.value)}
+                        onChange={(e) => handleStatusChange(e.target.value)}
                     >
                         <option>All Status</option>
                         <option>Published</option>
@@ -99,7 +121,7 @@ export default function ProjectsTable({ initialProjects }: { initialProjects: Pr
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-[#2A2A25]">
-                            {filteredProjects.map((project) => (
+                            {paginatedProjects.map((project) => (
                                 <tr key={project.id} className="hover:bg-[#1a1a15]/50 transition-colors group">
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-3">
@@ -138,9 +160,11 @@ export default function ProjectsTable({ initialProjects }: { initialProjects: Pr
                                     </td>
                                     <td className="px-6 py-4 text-right">
                                         <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <button className="p-1.5 text-gray-400 hover:text-white hover:bg-[#2A2A25] rounded transition-colors">
-                                                <Eye size={16} />
-                                            </button>
+                                            <Link href={`/admin/projects/${project.id}/edit`}>
+                                                <button className="p-1.5 text-gray-400 hover:text-white hover:bg-[#2A2A25] rounded transition-colors">
+                                                    <Eye size={16} />
+                                                </button>
+                                            </Link>
                                             <Link href={`/admin/projects/${project.id}/edit`}>
                                                 <button className="p-1.5 text-gray-400 hover:text-[#d39e17] hover:bg-[#d39e17]/10 rounded transition-colors">
                                                     <Edit size={16} />
@@ -165,9 +189,30 @@ export default function ProjectsTable({ initialProjects }: { initialProjects: Pr
                     )}
                 </div>
 
-                {/* Pagination placeholder */}
+                {/* Pagination */}
                 <div className="bg-[#1a1a15] px-6 py-4 border-t border-[#2A2A25] flex items-center justify-between">
-                    <span className="text-xs text-gray-500">Showing {filteredProjects.length} projects</span>
+                    <span className="text-xs text-gray-500">
+                        Showing {((currentPage - 1) * itemsPerPage) + 1}–{Math.min(currentPage * itemsPerPage, filteredProjects.length)} of {filteredProjects.length} projects
+                    </span>
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                            disabled={currentPage === 1}
+                            className="px-3 py-1.5 text-xs font-medium bg-[#141414] border border-[#2A2A25] rounded text-gray-300 hover:text-white hover:bg-[#2A2A25] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                        >
+                            Previous
+                        </button>
+                        <span className="text-xs text-gray-400 font-mono px-2">
+                            {currentPage} / {totalPages}
+                        </span>
+                        <button
+                            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                            disabled={currentPage === totalPages}
+                            className="px-3 py-1.5 text-xs font-medium bg-[#141414] border border-[#2A2A25] rounded text-gray-300 hover:text-white hover:bg-[#2A2A25] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                        >
+                            Next
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

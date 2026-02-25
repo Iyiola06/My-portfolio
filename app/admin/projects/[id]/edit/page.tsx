@@ -7,6 +7,28 @@ import { ArrowLeft, Save, Upload, Image as ImageIcon, X, Globe, Github, Code, La
 import { createBrowserSupabaseClient } from '@/lib/supabase/client';
 import Image from 'next/image';
 
+function useInsertMarkdown(
+    contentRef: React.RefObject<HTMLTextAreaElement | null>,
+    content: string,
+    setContent: (v: string) => void
+) {
+    return (prefix: string, suffix: string) => {
+        const textarea = contentRef.current;
+        if (!textarea) return;
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const selected = content.substring(start, end) || 'text';
+        const before = content.substring(0, start);
+        const after = content.substring(end);
+        const newText = `${before}${prefix}${selected}${suffix}${after}`;
+        setContent(newText);
+        setTimeout(() => {
+            textarea.focus();
+            textarea.setSelectionRange(start + prefix.length, start + prefix.length + selected.length);
+        }, 0);
+    };
+}
+
 export default function EditProjectPage() {
     const [activeTab, setActiveTab] = useState('content');
     const [loading, setLoading] = useState(true);
@@ -28,6 +50,7 @@ export default function EditProjectPage() {
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const contentRef = useRef<HTMLTextAreaElement>(null);
 
     const router = useRouter();
     const params = useParams();
@@ -63,6 +86,8 @@ export default function EditProjectPage() {
 
         fetchProject();
     }, [params.id, supabase, router]);
+
+    const insertMarkdown = useInsertMarkdown(contentRef, content, setContent);
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -219,15 +244,16 @@ export default function EditProjectPage() {
                         </div>
 
                         <div className="flex items-center gap-1 p-2 border-b border-[#2A2A25] bg-[#141414]">
-                            <button type="button" className="p-1.5 text-gray-400 hover:text-white hover:bg-[#2A2A25] rounded"><Type size={16} /></button>
-                            <button type="button" className="p-1.5 text-gray-400 hover:text-white hover:bg-[#2A2A25] rounded font-bold">B</button>
-                            <button type="button" className="p-1.5 text-gray-400 hover:text-white hover:bg-[#2A2A25] rounded italic">I</button>
+                            <button type="button" onClick={() => insertMarkdown('## ', '\n')} className="p-1.5 text-gray-400 hover:text-white hover:bg-[#2A2A25] rounded" title="Heading"><Type size={16} /></button>
+                            <button type="button" onClick={() => insertMarkdown('**', '**')} className="p-1.5 text-gray-400 hover:text-white hover:bg-[#2A2A25] rounded font-bold" title="Bold">B</button>
+                            <button type="button" onClick={() => insertMarkdown('*', '*')} className="p-1.5 text-gray-400 hover:text-white hover:bg-[#2A2A25] rounded italic" title="Italic">I</button>
                             <div className="w-px h-4 bg-[#2A2A25] mx-1"></div>
-                            <button type="button" className="p-1.5 text-gray-400 hover:text-white hover:bg-[#2A2A25] rounded"><Code size={16} /></button>
-                            <button type="button" className="p-1.5 text-gray-400 hover:text-white hover:bg-[#2A2A25] rounded"><Layout size={16} /></button>
+                            <button type="button" onClick={() => insertMarkdown('`', '`')} className="p-1.5 text-gray-400 hover:text-white hover:bg-[#2A2A25] rounded" title="Inline Code"><Code size={16} /></button>
+                            <button type="button" onClick={() => insertMarkdown('```\n', '\n```')} className="p-1.5 text-gray-400 hover:text-white hover:bg-[#2A2A25] rounded" title="Code Block"><Layout size={16} /></button>
                         </div>
 
                         <textarea
+                            ref={contentRef}
                             value={content}
                             onChange={(e) => setContent(e.target.value)}
                             className="flex-1 w-full bg-[#0A0A0A] p-6 text-gray-300 font-mono text-sm focus:outline-none resize-none"

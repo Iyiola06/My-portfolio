@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowRight, Github, Linkedin, Twitter, Mail, ExternalLink, Code, Database, Server, Layout, Terminal, Cpu, ChevronRight, Send, Loader2 } from 'lucide-react';
+import { ArrowRight, Github, Linkedin, Twitter, Mail, ExternalLink, Code, Database, Server, Layout, Terminal, Cpu, ChevronRight, Send, Loader2, Menu, X } from 'lucide-react';
 import { clsx } from 'clsx';
 
 export default function PortfolioPage() {
@@ -11,6 +11,7 @@ export default function PortfolioPage() {
   const [formData, setFormData] = useState({ name: '', email: '', subject: 'Project Inquiry', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,12 +65,36 @@ export default function PortfolioPage() {
                 Admin
               </button>
             </Link>
-            <button className="bg-[#d39e17] hover:bg-[#e5b02b] text-[#0A0A0A] px-5 py-2.5 rounded-md font-bold text-sm transition-all shadow-[0_0_15px_-3px_rgba(211,158,23,0.3)] hover:shadow-[0_0_20px_-3px_rgba(211,158,23,0.5)]">
-              Let&apos;s Talk
+            <a href="#contact">
+              <button className="hidden md:inline-flex bg-[#d39e17] hover:bg-[#e5b02b] text-[#0A0A0A] px-5 py-2.5 rounded-md font-bold text-sm transition-all shadow-[0_0_15px_-3px_rgba(211,158,23,0.3)] hover:shadow-[0_0_20px_-3px_rgba(211,158,23,0.5)]">
+                Let&apos;s Talk
+              </button>
+            </a>
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-2 text-gray-400 hover:text-white transition-colors"
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
         </div>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t border-[#1a1a15] bg-[#0A0A0A]/95 backdrop-blur-md px-6 pb-4 pt-2 space-y-3 animate-in">
+            <a href="#about" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-gray-300 hover:text-[#d39e17] transition-colors text-sm font-medium">About</a>
+            <a href="#work" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-gray-300 hover:text-[#d39e17] transition-colors text-sm font-medium">Work</a>
+            <a href="#process" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-gray-300 hover:text-[#d39e17] transition-colors text-sm font-medium">Process</a>
+            <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-gray-300 hover:text-[#d39e17] transition-colors text-sm font-medium">Contact</a>
+            <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-gray-300 hover:text-[#d39e17] transition-colors text-sm font-medium">Admin</Link>
+            <a href="#contact" onClick={() => setMobileMenuOpen(false)}>
+              <button className="w-full mt-2 bg-[#d39e17] hover:bg-[#e5b02b] text-[#0A0A0A] px-5 py-2.5 rounded-md font-bold text-sm transition-all">Let&apos;s Talk</button>
+            </a>
+          </div>
+        )}
       </nav>
+
 
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 px-6 overflow-hidden">
@@ -99,14 +124,18 @@ export default function PortfolioPage() {
             </p>
 
             <div className="flex flex-wrap items-center gap-4">
-              <button className="bg-[#d39e17] hover:bg-[#e5b02b] text-[#0A0A0A] px-8 py-4 rounded-md font-bold text-sm transition-all shadow-[0_0_15px_-3px_rgba(211,158,23,0.3)] hover:shadow-[0_0_20px_-3px_rgba(211,158,23,0.5)] flex items-center gap-2">
-                View Selected Work
-                <ArrowRight size={18} />
-              </button>
-              <button className="px-8 py-4 rounded-md border border-[#2A2A25] hover:border-white text-white font-medium text-sm transition-all flex items-center gap-2 bg-[#141414]/50 backdrop-blur-sm">
-                <Github size={18} />
-                Github
-              </button>
+              <a href="#work">
+                <button className="bg-[#d39e17] hover:bg-[#e5b02b] text-[#0A0A0A] px-8 py-4 rounded-md font-bold text-sm transition-all shadow-[0_0_15px_-3px_rgba(211,158,23,0.3)] hover:shadow-[0_0_20px_-3px_rgba(211,158,23,0.5)] flex items-center gap-2">
+                  View Selected Work
+                  <ArrowRight size={18} />
+                </button>
+              </a>
+              <a href="https://github.com/Iyiola06" target="_blank" rel="noopener noreferrer">
+                <button className="px-8 py-4 rounded-md border border-[#2A2A25] hover:border-white text-white font-medium text-sm transition-all flex items-center gap-2 bg-[#141414]/50 backdrop-blur-sm">
+                  <Github size={18} />
+                  Github
+                </button>
+              </a>
             </div>
 
             <div className="pt-8 flex items-center gap-6 text-gray-500">
@@ -294,12 +323,12 @@ export default function PortfolioPage() {
                 </div>
 
                 <div className="pt-4 flex gap-4">
-                  <button className="flex items-center gap-2 text-[#d39e17] font-bold hover:gap-3 transition-all">
+                  <a href="#contact" className="flex items-center gap-2 text-[#d39e17] font-bold hover:gap-3 transition-all">
                     View Case Study <ArrowRight size={18} />
-                  </button>
-                  <button className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
+                  </a>
+                  <a href="#contact" className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
                     <ExternalLink size={18} /> Live Demo
-                  </button>
+                  </a>
                 </div>
               </div>
             </div>
@@ -327,12 +356,12 @@ export default function PortfolioPage() {
                 </div>
 
                 <div className="pt-4 flex gap-4">
-                  <button className="flex items-center gap-2 text-[#d39e17] font-bold hover:gap-3 transition-all">
+                  <a href="#contact" className="flex items-center gap-2 text-[#d39e17] font-bold hover:gap-3 transition-all">
                     View Case Study <ArrowRight size={18} />
-                  </button>
-                  <button className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
+                  </a>
+                  <a href="https://github.com/Iyiola06" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
                     <Github size={18} /> View Code
-                  </button>
+                  </a>
                 </div>
               </div>
 
@@ -487,9 +516,9 @@ export default function PortfolioPage() {
           </div>
 
           <div className="flex items-center gap-6">
-            <a href="#" className="text-gray-500 hover:text-[#d39e17] transition-colors"><Github size={20} /></a>
-            <a href="#" className="text-gray-500 hover:text-[#d39e17] transition-colors"><Linkedin size={20} /></a>
-            <a href="#" className="text-gray-500 hover:text-[#d39e17] transition-colors"><Twitter size={20} /></a>
+            <a href="https://github.com/Iyiola06" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-[#d39e17] transition-colors"><Github size={20} /></a>
+            <a href="https://linkedin.com/in/iyiola-ogunjobi" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-[#d39e17] transition-colors"><Linkedin size={20} /></a>
+            <a href="https://twitter.com/iyiola_dev" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-[#d39e17] transition-colors"><Twitter size={20} /></a>
           </div>
         </div>
       </footer>

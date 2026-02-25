@@ -7,6 +7,28 @@ import { ArrowLeft, Save, Upload, Image as ImageIcon, X, Globe, Github, Code, La
 import { createBrowserSupabaseClient } from '@/lib/supabase/client';
 import Image from 'next/image';
 
+function useInsertMarkdown(
+  contentRef: React.RefObject<HTMLTextAreaElement | null>,
+  content: string,
+  setContent: (v: string) => void
+) {
+  return (prefix: string, suffix: string) => {
+    const textarea = contentRef.current;
+    if (!textarea) return;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selected = content.substring(start, end) || 'text';
+    const before = content.substring(0, start);
+    const after = content.substring(end);
+    const newText = `${before}${prefix}${selected}${suffix}${after}`;
+    setContent(newText);
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(start + prefix.length, start + prefix.length + selected.length);
+    }, 0);
+  };
+}
+
 export default function NewProjectPage() {
   const [activeTab, setActiveTab] = useState('content');
   const [loading, setLoading] = useState(false);
@@ -16,6 +38,8 @@ export default function NewProjectPage() {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [content, setContent] = useState(`## Overview\n\nThis project was designed to solve...\n\n### Key Features\n\n- Feature 1\n- Feature 2\n`);
+  const [problemStatement, setProblemStatement] = useState('');
+  const [solution, setSolution] = useState('');
   const [category, setCategory] = useState('Full Stack Development');
   const [status, setStatus] = useState('Draft');
   const [liveUrl, setLiveUrl] = useState('');
@@ -27,9 +51,24 @@ export default function NewProjectPage() {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const contentRef = useRef<HTMLTextAreaElement>(null);
 
   const router = useRouter();
   const supabase = createBrowserSupabaseClient();
+
+  // Get the active content setter/getter for toolbar
+  const getActiveContent = () => {
+    if (activeTab === 'problem') return problemStatement;
+    if (activeTab === 'solution') return solution;
+    return content;
+  };
+  const setActiveContent = (v: string) => {
+    if (activeTab === 'problem') setProblemStatement(v);
+    else if (activeTab === 'solution') setSolution(v);
+    else setContent(v);
+  };
+
+  const insertMarkdown = useInsertMarkdown(contentRef, getActiveContent(), setActiveContent);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -89,6 +128,8 @@ export default function NewProjectPage() {
         name,
         description,
         content,
+        problem_statement: problemStatement,
+        solution,
         category,
         tech,
         status: useStatus,
@@ -182,36 +223,41 @@ export default function NewProjectPage() {
           {/* Editor Tabs */}
           <div className="bg-[#141414] border border-[#2A2A25] rounded-lg overflow-hidden flex flex-col min-h-[500px]">
             <div className="flex border-b border-[#2A2A25] bg-[#1a1a15]">
-              {['Content', 'Problem Statement', 'Solution'].map((tab) => (
+              {[
+                { key: 'content', label: 'Content' },
+                { key: 'problem', label: 'Problem Statement' },
+                { key: 'solution', label: 'Solution' },
+              ].map((tab) => (
                 <button
-                  key={tab}
+                  key={tab.key}
                   type="button"
-                  onClick={() => setActiveTab(tab.toLowerCase().split(' ')[0])}
-                  className={`px-6 py-3 text-sm font-medium border-r border-[#2A2A25] transition-colors ${activeTab === tab.toLowerCase().split(' ')[0]
+                  onClick={() => setActiveTab(tab.key)}
+                  className={`px-6 py-3 text-sm font-medium border-r border-[#2A2A25] transition-colors ${activeTab === tab.key
                     ? 'bg-[#141414] text-[#d39e17] border-t-2 border-t-[#d39e17]'
                     : 'text-gray-400 hover:text-white hover:bg-[#141414]'
                     }`}
                 >
-                  {tab}
+                  {tab.label}
                 </button>
               ))}
             </div>
 
             {/* Toolbar */}
             <div className="flex items-center gap-1 p-2 border-b border-[#2A2A25] bg-[#141414]">
-              <button type="button" className="p-1.5 text-gray-400 hover:text-white hover:bg-[#2A2A25] rounded"><Type size={16} /></button>
-              <button type="button" className="p-1.5 text-gray-400 hover:text-white hover:bg-[#2A2A25] rounded font-bold">B</button>
-              <button type="button" className="p-1.5 text-gray-400 hover:text-white hover:bg-[#2A2A25] rounded italic">I</button>
+              <button type="button" onClick={() => insertMarkdown('## ', '\n')} className="p-1.5 text-gray-400 hover:text-white hover:bg-[#2A2A25] rounded" title="Heading"><Type size={16} /></button>
+              <button type="button" onClick={() => insertMarkdown('**', '**')} className="p-1.5 text-gray-400 hover:text-white hover:bg-[#2A2A25] rounded font-bold" title="Bold">B</button>
+              <button type="button" onClick={() => insertMarkdown('*', '*')} className="p-1.5 text-gray-400 hover:text-white hover:bg-[#2A2A25] rounded italic" title="Italic">I</button>
               <div className="w-px h-4 bg-[#2A2A25] mx-1"></div>
-              <button type="button" className="p-1.5 text-gray-400 hover:text-white hover:bg-[#2A2A25] rounded"><Code size={16} /></button>
-              <button type="button" className="p-1.5 text-gray-400 hover:text-white hover:bg-[#2A2A25] rounded"><Layout size={16} /></button>
+              <button type="button" onClick={() => insertMarkdown('`', '`')} className="p-1.5 text-gray-400 hover:text-white hover:bg-[#2A2A25] rounded" title="Inline Code"><Code size={16} /></button>
+              <button type="button" onClick={() => insertMarkdown('```\n', '\n```')} className="p-1.5 text-gray-400 hover:text-white hover:bg-[#2A2A25] rounded" title="Code Block"><Layout size={16} /></button>
             </div>
 
             <textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
+              ref={contentRef}
+              value={getActiveContent()}
+              onChange={(e) => setActiveContent(e.target.value)}
               className="flex-1 w-full bg-[#0A0A0A] p-6 text-gray-300 font-mono text-sm focus:outline-none resize-none"
-              placeholder="# Project Case Study..."
+              placeholder={activeTab === 'content' ? '# Project Case Study...' : activeTab === 'problem' ? 'Describe the problem this project solves...' : 'Describe the solution and approach...'}
             />
           </div>
         </div>

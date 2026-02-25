@@ -17,8 +17,16 @@ export interface BlogPost {
 
 export default function BlogTable({ initialPosts }: { initialPosts: BlogPost[] }) {
     const [posts, setPosts] = useState(initialPosts);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
     const router = useRouter();
     const supabase = createBrowserSupabaseClient();
+
+    const totalPages = Math.max(1, Math.ceil(posts.length / itemsPerPage));
+    const paginatedPosts = posts.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
 
     const handleDelete = async (id: string, title: string) => {
         if (confirm(`Are you sure you want to delete "${title}"?`)) {
@@ -47,7 +55,7 @@ export default function BlogTable({ initialPosts }: { initialPosts: BlogPost[] }
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-[#2A2A25]">
-                        {posts.map((post) => (
+                        {paginatedPosts.map((post) => (
                             <tr key={post.id} className="hover:bg-[#1a1a15]/50 transition-colors group">
                                 <td className="px-6 py-4 font-medium text-white">{post.title}</td>
                                 <td className="px-6 py-4 text-gray-300">{post.category}</td>
@@ -66,9 +74,11 @@ export default function BlogTable({ initialPosts }: { initialPosts: BlogPost[] }
                                 <td className="px-6 py-4 text-gray-400 font-mono text-xs">{post.views}</td>
                                 <td className="px-6 py-4 text-right">
                                     <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <button className="p-1.5 text-gray-400 hover:text-white hover:bg-[#2A2A25] rounded transition-colors">
-                                            <Eye size={16} />
-                                        </button>
+                                        <Link href={`/admin/blog/${post.id}/edit`}>
+                                            <button className="p-1.5 text-gray-400 hover:text-white hover:bg-[#2A2A25] rounded transition-colors">
+                                                <Eye size={16} />
+                                            </button>
+                                        </Link>
                                         <Link href={`/admin/blog/${post.id}/edit`}>
                                             <button className="p-1.5 text-gray-400 hover:text-[#d39e17] hover:bg-[#d39e17]/10 rounded transition-colors">
                                                 <Edit size={16} />
@@ -91,6 +101,32 @@ export default function BlogTable({ initialPosts }: { initialPosts: BlogPost[] }
                         No blog posts found.
                     </div>
                 )}
+            </div>
+
+            {/* Pagination */}
+            <div className="bg-[#1a1a15] px-6 py-4 border-t border-[#2A2A25] flex items-center justify-between">
+                <span className="text-xs text-gray-500">
+                    Showing {((currentPage - 1) * itemsPerPage) + 1}–{Math.min(currentPage * itemsPerPage, posts.length)} of {posts.length} posts
+                </span>
+                <div className="flex items-center gap-2">
+                    <button
+                        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                        disabled={currentPage === 1}
+                        className="px-3 py-1.5 text-xs font-medium bg-[#141414] border border-[#2A2A25] rounded text-gray-300 hover:text-white hover:bg-[#2A2A25] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                    >
+                        Previous
+                    </button>
+                    <span className="text-xs text-gray-400 font-mono px-2">
+                        {currentPage} / {totalPages}
+                    </span>
+                    <button
+                        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                        disabled={currentPage === totalPages}
+                        className="px-3 py-1.5 text-xs font-medium bg-[#141414] border border-[#2A2A25] rounded text-gray-300 hover:text-white hover:bg-[#2A2A25] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                    >
+                        Next
+                    </button>
+                </div>
             </div>
         </div>
     );
