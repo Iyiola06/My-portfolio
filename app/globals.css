@@ -1,0 +1,16 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@theme {
+  --color-sulva-black: #050505;
+  --color-sulva-white-soft: #F5F5F7;
+  --color-sulva-white-warm: #EAEAEA;
+  --color-sulva-gold: #D4AF37;
+  --color-sulva-purple: #6F3CFF;
+}
+
+@layer utilities {
+  .glass-panel {
+    @apply bg-white/[0.03] backdrop-blur-xl border border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.5)];
+  }
+}
