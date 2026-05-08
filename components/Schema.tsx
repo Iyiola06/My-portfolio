@@ -8,9 +8,11 @@ export const Schema = () => {
     "url": "https://iyiola.sulvatech.com",
     "jobTitle": "Visionary Builder & Technologist",
     "description": "Iyiola Ogunjobi is a founder, technologist, and creative systems thinker focused on building intelligent digital experiences and futuristic products.",
+    "email": "iyiola@sulvatech.com",
+    "telephone": "+2347068495149",
     "sameAs": [
       "https://github.com/Iyiola06",
-      // Add other social links here if available
+      "https://wa.me/2347068495149"
     ],
     "knowsAbout": [
       "Software Engineering",

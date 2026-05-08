@@ -39,10 +39,16 @@ export function Contact() {
               Whether it’s a bold product idea, an ambitious digital experience, or a futuristic system concept - I’m always interested in conversations that push technology forward.
             </p>
             
-            <div className="space-y-6">
+            <div className="space-y-8">
                <div className="flex flex-col">
-                  <span className="text-xs font-mono text-sulva-white-warm/40 uppercase tracking-widest mb-2">Direct Inquiry</span>
-                  <a href="mailto:founder@sulvatechnology.com" className="text-xl text-white hover:text-sulva-gold transition-colors font-light">founder@sulvatechnology.com</a>
+                  <span className="text-xs font-mono text-sulva-white-warm/40 uppercase tracking-widest mb-2">Email</span>
+                  <a href="mailto:iyiola@sulvatech.com" className="text-xl text-white hover:text-sulva-gold transition-colors font-light">iyiola@sulvatech.com</a>
+               </div>
+               <div className="flex flex-col">
+                  <span className="text-xs font-mono text-sulva-white-warm/40 uppercase tracking-widest mb-2">WhatsApp</span>
+                  <a href="https://wa.me/2347068495149" target="_blank" rel="noopener noreferrer" className="text-xl text-white hover:text-[#25D366] transition-colors font-light flex items-center gap-2">
+                    +234 706 849 5149
+                  </a>
                </div>
                <div className="flex flex-col">
                   <span className="text-xs font-mono text-sulva-white-warm/40 uppercase tracking-widest mb-2">Global Headquarters</span>
