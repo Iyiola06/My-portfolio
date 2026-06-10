@@ -64,7 +64,7 @@ export function Hero() {
         {/* Right Side: Environment */}
         <div className="w-full lg:w-1/2 h-[50vh] lg:h-screen absolute lg:relative top-0 left-0 lg:left-auto opacity-40 lg:opacity-100 -z-10 lg:z-10 pointer-events-none lg:pointer-events-auto flex items-center justify-center">
           <motion.div 
-            className="w-[150%] max-w-none relative z-10 lg:-mr-32"
+            className="w-[150%] max-w-none relative z-10 lg:-mr-32 mix-blend-screen [mask-image:radial-gradient(ellipse_at_center,black_38%,rgba(0,0,0,0.72)_58%,transparent_78%)]"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 2, ease: [0.2, 0.65, 0.3, 0.9] }}
@@ -75,7 +75,7 @@ export function Hero() {
                muted 
                playsInline
                onEnded={(e) => e.currentTarget.play()} 
-               className="w-full h-full object-contain mix-blend-screen"
+               className="w-full h-full object-contain bg-transparent opacity-90 [filter:contrast(1.2)_brightness(1.08)]"
                src="/hero-video.mp4"
             />
           </motion.div>
