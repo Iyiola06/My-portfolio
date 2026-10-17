@@ -134,7 +134,7 @@ export function Preloader({ onComplete }: { onComplete: () => void }) {
                transition={{ duration: 0.8, delay: 0.8 }}
                className="text-sulva-white-warm/40 font-light text-sm sm:text-base italic text-center"
             >
-              "Building intelligent digital futures."
+              &ldquo;Building platforms Africa runs on.&rdquo;
             </motion.p>
           </motion.div>
         )}

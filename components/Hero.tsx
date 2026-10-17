@@ -2,6 +2,7 @@
 
 import { motion } from 'motion/react';
 import { ArrowUpRight } from 'lucide-react';
+import { whatsappUrl } from '@/lib/contact';
 
 export function Hero() {
   return (
@@ -25,12 +26,12 @@ export function Hero() {
             <div className="flex items-center gap-3 mb-6">
               <div className="w-2 h-2 rounded-full bg-sulva-gold shadow-[0_0_10px_rgba(212,175,55,0.8)] animate-pulse" />
               <span className="text-sulva-gold font-mono text-[10px] tracking-[0.2em] uppercase">
-                Welcome to my digital universe
+                Founder, Sulva Tech
               </span>
             </div>
             <h1 className="text-5xl sm:text-7xl lg:text-[7rem] font-medium tracking-tight text-white leading-[1] mb-8 lg:-ml-1">
-              I Design<br/>Intelligent<br/>Digital<br/>
-              <span className="text-sulva-gold">Futures.</span>
+              I Build<br/>Platforms<br/>Africa Runs<br/>
+              <span className="text-sulva-gold">On.</span>
             </h1>
           </motion.div>
 
@@ -40,7 +41,7 @@ export function Hero() {
             transition={{ duration: 1.2, delay: 0.4, ease: [0.2, 0.65, 0.3, 0.9] }}
           >
             <p className="text-lg sm:text-xl text-sulva-white-warm/80 font-light max-w-md leading-relaxed mb-12">
-              I am Iyiola Ogunjobi - a founder, technologist, and creative systems thinker focused on building intelligent digital experiences, scalable infrastructure, and futuristic products that shape how people interact with technology.
+              I&apos;m Iyiola Ogunjobi, founder of Sulva Tech. I design and ship AI-powered platforms for education, commerce, media and events, from first idea to live product.
             </p>
           </motion.div>
 
@@ -50,14 +51,22 @@ export function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.2, delay: 0.6, ease: [0.2, 0.65, 0.3, 0.9] }}
           >
-            <button className="group relative px-8 py-4 bg-transparent border border-sulva-gold/40 hover:border-sulva-gold/80 backdrop-blur-md rounded-[2rem] overflow-hidden transition-all duration-500 hover:shadow-[0_0_20px_-5px_rgba(212,175,55,0.3)] flex items-center justify-center gap-3">
-              <span className="relative z-10 text-white font-medium tracking-wide text-sm">Explore My Vision</span>
+            <a
+              href={whatsappUrl("Hi Iyiola, I found your portfolio and I'd like to talk about a project.")}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative px-8 py-4 bg-transparent border border-sulva-gold/40 hover:border-sulva-gold/80 backdrop-blur-md rounded-[2rem] overflow-hidden transition-all duration-500 hover:shadow-[0_0_20px_-5px_rgba(212,175,55,0.3)] flex items-center justify-center gap-3"
+            >
+              <span className="relative z-10 text-white font-medium tracking-wide text-sm">Chat With Me On WhatsApp</span>
               <ArrowUpRight className="w-4 h-4 text-sulva-gold relative z-10 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-            </button>
-            <button className="group relative px-8 py-4 bg-transparent border border-white/20 hover:border-white/40 rounded-[2rem] overflow-hidden transition-all duration-500 flex items-center justify-center gap-3">
+            </a>
+            <a
+              href="#projects"
+              className="group relative px-8 py-4 bg-transparent border border-white/20 hover:border-white/40 rounded-[2rem] overflow-hidden transition-all duration-500 flex items-center justify-center gap-3"
+            >
               <span className="relative z-10 text-white group-hover:text-white transition-colors duration-300 font-medium tracking-wide text-sm">View Projects</span>
               <ArrowUpRight className="w-4 h-4 text-white relative z-10 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-            </button>
+            </a>
           </motion.div>
         </div>
 

@@ -4,35 +4,34 @@ import './globals.css';
 export const metadata: Metadata = {
   metadataBase: new URL('https://iyiola.sulvatech.com'),
   title: {
-    default: 'Iyiola Ogunjobi | Visionary Builder & Technologist',
+    default: 'Iyiola Ogunjobi | Founder of Sulva Tech',
     template: '%s | Iyiola Ogunjobi',
   },
-  description: 'Iyiola Ogunjobi is a founder, technologist, and creative systems thinker focused on building intelligent digital experiences and futuristic products.',
-  keywords: ['Iyiola Ogunjobi', 'Technologist', 'Software Engineer', 'Systems Thinker', 'Visionary Builder', 'AI', 'Digital Experiences', 'Portfolio'],
+  description: 'Iyiola Ogunjobi is the founder of Sulva Tech, building AI-powered platforms for education, commerce, media and events across Africa.',
+  keywords: ['Iyiola Ogunjobi', 'Technologist', 'Software Engineer', 'Systems Thinker', 'AI', 'Digital Experiences', 'Portfolio'],
   authors: [{ name: 'Iyiola Ogunjobi' }],
   creator: 'Iyiola Ogunjobi',
   openGraph: {
     type: 'website',
     locale: 'en_US',
     url: 'https://iyiola.sulvatech.com',
-    title: 'Iyiola Ogunjobi | Visionary Builder & Technologist',
-    description: 'Building intelligent digital experiences and futuristic products.',
+    title: 'Iyiola Ogunjobi | Founder of Sulva Tech',
+    description: 'Founder of Sulva Tech. AI-powered platforms for education, commerce, media and events.',
     siteName: 'Iyiola Ogunjobi Portfolio',
     images: [
       {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Iyiola Ogunjobi - Visionary Builder & Technologist',
+        alt: 'Iyiola Ogunjobi - Founder of Sulva Tech',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Iyiola Ogunjobi | Visionary Builder & Technologist',
-    description: 'Building intelligent digital experiences and futuristic products.',
+    title: 'Iyiola Ogunjobi | Founder of Sulva Tech',
+    description: 'Founder of Sulva Tech. AI-powered platforms for education, commerce, media and events.',
     images: ['/og-image.png'],
-    creator: '@iyiola', // Assuming a handle or just the name
   },
   icons: {
     icon: '/favicon.png',

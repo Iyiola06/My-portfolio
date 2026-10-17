@@ -2,9 +2,23 @@
 
 import { motion } from 'motion/react';
 import { useState } from 'react';
+import { CONTACT_EMAIL, WHATSAPP_DISPLAY, whatsappUrl } from '@/lib/contact';
 
 export function Contact() {
   const [focusedField, setFocusedField] = useState<string | null>(null);
+  const [sent, setSent] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const data = new FormData(e.currentTarget);
+    const field = (key: string) => String(data.get(key) ?? '').trim();
+    const lines = [`Hi Iyiola, my name is ${field('name')}.`];
+    if (field('company')) lines.push(`Company: ${field('company')}`);
+    if (field('projectType')) lines.push(`Project type: ${field('projectType')}`);
+    lines.push(`Email: ${field('email')}`, '', field('message'));
+    window.open(whatsappUrl(lines.join('\n')), '_blank', 'noopener,noreferrer');
+    setSent(true);
+  };
 
   const inputClasses = (name: string) => `
     w-full bg-white/[0.02] border transition-all duration-300 rounded-xl px-4 py-4
@@ -36,18 +50,18 @@ export function Contact() {
               Let’s Build Something <span className="text-sulva-white-warm/50">Meaningful.</span>
             </h2>
             <p className="text-lg sm:text-xl text-sulva-white-warm/70 font-light leading-relaxed max-w-lg mb-12">
-              Whether it’s a bold product idea, an ambitious digital experience, or a futuristic system concept - I’m always interested in conversations that push technology forward.
+              Have a product to launch, a platform to rebuild or a system that needs to scale? Message me on WhatsApp and we&apos;ll talk it through.
             </p>
             
             <div className="space-y-8">
                <div className="flex flex-col">
                   <span className="text-xs font-mono text-sulva-white-warm/40 uppercase tracking-widest mb-2">Email</span>
-                  <a href="mailto:iyiola@sulvatech.com" className="text-xl text-white hover:text-sulva-gold transition-colors font-light">iyiola@sulvatech.com</a>
+                  <a href={`mailto:${CONTACT_EMAIL}`} className="text-xl text-white hover:text-sulva-gold transition-colors font-light">{CONTACT_EMAIL}</a>
                </div>
                <div className="flex flex-col">
                   <span className="text-xs font-mono text-sulva-white-warm/40 uppercase tracking-widest mb-2">WhatsApp</span>
-                  <a href="https://wa.me/2347068495149" target="_blank" rel="noopener noreferrer" className="text-xl text-white hover:text-[#25D366] transition-colors font-light flex items-center gap-2">
-                    +234 706 849 5149
+                  <a href={whatsappUrl()} target="_blank" rel="noopener noreferrer" className="text-xl text-white hover:text-[#25D366] transition-colors font-light flex items-center gap-2">
+                    {WHATSAPP_DISPLAY}
                   </a>
                </div>
                <div className="flex flex-col">
@@ -67,12 +81,12 @@ export function Contact() {
              transition={{ duration: 1, delay: 0.2 }}
              className="glass-panel p-8 sm:p-12 rounded-3xl relative z-10"
           >
-             <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+             <form className="space-y-6" onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div className="relative">
                     <input 
                       type="text" 
-                      placeholder="Full Name" 
+                      name="name" required placeholder="Full Name" 
                       className={inputClasses('name')} 
                       onFocus={() => setFocusedField('name')}
                       onBlur={() => setFocusedField(null)}
@@ -81,7 +95,7 @@ export function Contact() {
                   <div className="relative">
                     <input 
                       type="email" 
-                      placeholder="Email Address" 
+                      name="email" required placeholder="Email Address" 
                       className={inputClasses('email')} 
                       onFocus={() => setFocusedField('email')}
                       onBlur={() => setFocusedField(null)}
@@ -93,7 +107,7 @@ export function Contact() {
                   <div className="relative">
                     <input 
                       type="text" 
-                      placeholder="Company" 
+                      name="company" placeholder="Company" 
                       className={inputClasses('company')} 
                       onFocus={() => setFocusedField('company')}
                       onBlur={() => setFocusedField(null)}
@@ -102,7 +116,7 @@ export function Contact() {
                   <div className="relative">
                     <input 
                       type="text" 
-                      placeholder="Project Type (e.g. AI, Infrastructure)" 
+                      name="projectType" placeholder="Project Type (e.g. AI, Infrastructure)" 
                       className={inputClasses('projectType')} 
                       onFocus={() => setFocusedField('projectType')}
                       onBlur={() => setFocusedField(null)}
@@ -112,7 +126,7 @@ export function Contact() {
 
                 <div className="relative">
                   <textarea 
-                    placeholder="Tell me about your vision..." 
+                    name="message" required placeholder="Tell me about your vision..." 
                     rows={4}
                     className={inputClasses('message') + " resize-none"} 
                     onFocus={() => setFocusedField('message')}
@@ -121,12 +135,17 @@ export function Contact() {
                 </div>
 
                 <div className="pt-4">
-                  <button className="w-full group relative px-8 py-5 bg-white text-sulva-black rounded-xl overflow-hidden transition-all duration-500 hover:shadow-[0_0_30px_-5px_rgba(255,255,255,0.3)]">
+                  <button type="submit" className="w-full group relative px-8 py-5 bg-white text-sulva-black rounded-xl overflow-hidden transition-all duration-500 hover:shadow-[0_0_30px_-5px_rgba(255,255,255,0.3)]">
                     <div className="absolute inset-0 bg-sulva-white-warm opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     <span className="relative z-10 font-medium tracking-wide flex items-center justify-center gap-3">
-                      Start A Conversation
+                      Send On WhatsApp
                     </span>
                   </button>
+                  {sent && (
+                    <p role="status" className="mt-4 text-sm text-sulva-gold text-center">
+                      WhatsApp is opening with your message. If it didn&apos;t, message me directly at {WHATSAPP_DISPLAY}.
+                    </p>
+                  )}
                 </div>
              </form>
           </motion.div>
