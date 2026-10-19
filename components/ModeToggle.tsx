@@ -10,12 +10,13 @@ const OPTIONS: { value: ViewMode; label: string }[] = [
 
 export function ModeToggle({ id }: { id: string }) {
   const { mode, setMode } = useViewMode();
+  const light = mode === 'human';
 
   return (
     <div
       role="group"
       aria-label="Portfolio view"
-      className="relative flex items-center p-1 rounded-full border border-white/10 bg-white/[0.04] backdrop-blur-md"
+      className={`relative flex items-center p-1 rounded-full border backdrop-blur-md ${light ? 'border-ink/15 bg-paper-raised/70' : 'border-white/10 bg-white/[0.04]'}`}
     >
       {OPTIONS.map((option) => {
         const active = mode === option.value;
@@ -25,14 +26,14 @@ export function ModeToggle({ id }: { id: string }) {
             type="button"
             aria-pressed={active}
             onClick={() => setMode(option.value)}
-            className={`relative z-10 px-3.5 py-1.5 rounded-full text-[11px] font-semibold tracking-widest uppercase outline-none transition-colors duration-300 ${
+            className={`relative z-10 px-2.5 sm:px-3.5 py-1.5 rounded-full text-[11px] font-semibold tracking-widest uppercase outline-none transition-colors duration-300 ${
               option.value === 'dev' ? 'font-mono' : ''
-            } ${active ? 'text-sulva-black' : 'text-white/60 hover:text-white'}`}
+            } ${active ? (option.value === 'dev' ? 'text-sulva-black' : 'text-paper') : light ? 'text-ink/55 hover:text-ink' : 'text-white/60 hover:text-white'}`}
           >
             {active && (
               <motion.span
                 layoutId={`mode-pill-${id}`}
-                className={`absolute inset-0 -z-10 rounded-full ${option.value === 'dev' ? 'bg-emerald-400' : 'bg-sulva-gold'}`}
+                className={`absolute inset-0 -z-10 rounded-full ${option.value === 'dev' ? 'bg-emerald-400' : 'bg-ink'}`}
                 transition={{ type: 'spring', bounce: 0.15, duration: 0.5 }}
               />
             )}

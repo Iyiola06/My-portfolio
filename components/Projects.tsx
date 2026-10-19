@@ -1,7 +1,7 @@
 'use client';
 
-import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
-import { useRef, useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { useState, useEffect } from 'react';
 import {
   X,
   ArrowRight,
@@ -21,6 +21,7 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import Image from 'next/image';
+import { whatsappUrl } from '@/lib/contact';
 
 export const projectsData = [
   {
@@ -210,108 +211,102 @@ export function Projects() {
 
   // Lock body scroll when modal is open
   useEffect(() => {
-    if (selectedProject) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
+    document.body.style.overflow = selectedProject ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [selectedProject]);
 
   return (
     <>
-      <section id="projects" className="relative bg-sulva-black py-32 z-10 w-full overflow-hidden">
-        {/* Ambient background glow */}
-        <div className="absolute top-0 right-0 w-full h-[500px] bg-gradient-to-b from-sulva-black via-sulva-purple/5 to-sulva-black pointer-events-none" />
-
-        <div className="w-full max-w-7xl mx-auto px-6 sm:px-12 lg:px-24 xl:px-8 z-10">
-          <div className="text-center mb-24 lg:mb-32">
-            <h2 className="text-4xl sm:text-6xl font-medium text-white tracking-tight">
-              Premium Projects
-            </h2>
-            <p className="mt-4 text-sulva-white-warm/60 font-light text-lg">
-              Ten real systems spanning AI, education, commerce, media, community, and operations.
+      <section id="projects" className="relative bg-paper py-28 sm:py-36 w-full overflow-hidden">
+        <div className="w-full max-w-7xl mx-auto px-6 sm:px-12 lg:px-16">
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-20 lg:mb-28 border-b border-ink/10 pb-10">
+            <div>
+              <div className="flex items-center gap-2 mb-6">
+                <span className="w-1.5 h-1.5 rounded-full bg-sulva-gold" />
+                <span className="text-sm text-ink/60">Selected work</span>
+              </div>
+              <h2 className="font-display text-4xl sm:text-6xl tracking-tight text-ink">
+                <span className="font-light">Ten systems, </span>
+                <span className="font-semibold text-bronze">all live.</span>
+              </h2>
+            </div>
+            <p className="max-w-sm text-ink/60 leading-relaxed">
+              Real products spanning AI, education, commerce, media, community and operations.
             </p>
           </div>
 
-          <div className="flex flex-col gap-32">
+          <div className="flex flex-col gap-24 lg:gap-32">
             {projectsData.map((project, index) => (
-              <div 
-                key={project.id} 
-                className={`flex flex-col ${index % 2 === 1 ? 'lg:flex-row-reverse' : 'lg:flex-row'} gap-16 lg:gap-24 items-center group`}
+              <div
+                key={project.id}
+                className={`flex flex-col ${index % 2 === 1 ? 'lg:flex-row-reverse' : 'lg:flex-row'} gap-10 lg:gap-20 items-center group`}
               >
-                
-                {/* Left Side: Typography & Details */}
-                <div className="w-full lg:w-1/2 flex flex-col justify-center space-y-8">
-                  <div className="flex items-center gap-4 text-sulva-white-warm/60">
-                    <span className="w-8 h-[1px] bg-sulva-white-warm/30" />
-                    <span className="font-mono text-sm tracking-widest uppercase">
+                {/* Details */}
+                <div className="w-full lg:w-5/12 flex flex-col justify-center space-y-6">
+                  <div className="flex items-center gap-4 text-ink/40">
+                    <span className="font-mono text-xs tracking-widest">
                       {String(index + 1).padStart(2, '0')} / {String(projectsData.length).padStart(2, '0')}
                     </span>
+                    <span className="h-px flex-1 max-w-16 bg-ink/15" />
                   </div>
 
                   <div>
-                    <h3 className="text-sm font-mono text-sulva-purple tracking-widest uppercase mb-3">
-                      {project.category}
-                    </h3>
-                    <h2 className="text-4xl sm:text-5xl font-medium text-white tracking-tight leading-tight">
+                    <h3 className="text-xs uppercase tracking-[0.2em] text-bronze mb-3">{project.category}</h3>
+                    <h2 className="font-display text-4xl sm:text-5xl font-medium text-ink tracking-tight leading-tight">
                       {project.title}
                     </h2>
                   </div>
 
-                  <p className="text-lg text-sulva-white-warm/80 font-light leading-relaxed max-w-md">
-                    {project.description}
-                  </p>
+                  <p className="text-lg text-ink/70 leading-relaxed max-w-md">{project.description}</p>
 
-                  <div className="flex flex-wrap gap-3 pt-4">
-                    {project.technologies.slice(0, 4).map((tech, i) => (
-                      <span key={i} className="px-4 py-1.5 text-xs text-sulva-white-warm bg-white/5 border border-white/10 rounded-full">
+                  <div className="flex flex-wrap gap-2">
+                    {project.technologies.slice(0, 4).map((tech) => (
+                      <span key={tech} className="px-3.5 py-1.5 text-xs text-ink/70 border border-ink/15 rounded-full">
                         {tech}
                       </span>
                     ))}
                   </div>
 
-                  <div className="pt-8">
-                    <button 
+                  <div className="pt-4">
+                    <button
                       onClick={() => setSelectedProject(project)}
-                      className="group/btn flex items-center gap-3 px-6 py-3 bg-white text-sulva-black rounded-full font-medium transition-all hover:bg-sulva-white-warm"
+                      className="group/btn inline-flex items-center gap-6 pl-6 pr-5 py-3.5 bg-ink text-paper rounded-full text-sm font-medium transition-colors hover:bg-black"
                     >
-                      <span>Explore Project</span>
-                      <ArrowRight className="w-4 h-4 group/btn-hover:translate-x-1 transition-transform" />
+                      Explore project
+                      <ArrowRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
                     </button>
                   </div>
                 </div>
 
-                {/* Right Side: Visuals & Mockups */}
-                <div className="w-full lg:w-1/2 relative h-[400px] lg:h-[500px]">
-                   <div 
-                     className="absolute inset-0 w-full h-full cursor-pointer"
-                     onClick={() => setSelectedProject(project)}
-                   >
-                     {/* Main Image Plate */}
-                     <div className="absolute inset-0 rounded-3xl overflow-hidden glass-panel border border-white/10 shadow-2xl transition-transform duration-700 group-hover:scale-[1.02]">
-                       <Image 
-                         src={project.mockupImage} 
-                         alt={project.title}
-                         fill
-                         className="object-cover opacity-80 mix-blend-luminosity hover:mix-blend-normal transition-all duration-700 hover:scale-105"
-                         referrerPolicy="no-referrer"
-                       />
-                       <div className="absolute inset-0 bg-gradient-to-t from-sulva-black/80 via-transparent to-transparent opacity-60" />
-                     </div>
-                     
-                     {/* Floating Element 1 */}
-                     <motion.div 
-                       animate={{ y: [0, -10, 0] }}
-                       transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-                       className="absolute -top-4 -right-4 lg:-top-8 lg:-right-8 w-24 h-24 lg:w-32 lg:h-32 glass-panel rounded-full flex items-center justify-center border border-white/10 shadow-2xl z-20 backdrop-blur-2xl"
-                     >
-                       <div className="text-sulva-white-warm scale-125">
-                         {project.icon}
-                       </div>
-                     </motion.div>
-                   </div>
-                </div>
-
+                {/* Visual */}
+                <button
+                  type="button"
+                  onClick={() => setSelectedProject(project)}
+                  aria-label={`Open ${project.title}`}
+                  className="w-full lg:w-7/12 relative text-left"
+                >
+                  <div className="rounded-2xl overflow-hidden border border-ink/10 bg-paper-raised shadow-[0_30px_80px_-30px_rgba(20,20,20,0.35)] transition-transform duration-700 group-hover:-translate-y-1.5">
+                    <div className="flex items-center gap-1.5 px-4 py-2.5 border-b border-ink/10">
+                      <span className="w-2 h-2 rounded-full bg-ink/15" />
+                      <span className="w-2 h-2 rounded-full bg-ink/15" />
+                      <span className="w-2 h-2 rounded-full bg-ink/15" />
+                    </div>
+                    <div className="relative aspect-[16/10]">
+                      <Image
+                        src={project.mockupImage}
+                        alt={`${project.title} homepage`}
+                        fill
+                        sizes="(min-width: 1024px) 55vw, 90vw"
+                        className="object-cover object-top transition-transform duration-700 group-hover:scale-[1.02]"
+                      />
+                    </div>
+                  </div>
+                  <div className="absolute -bottom-5 right-6 w-14 h-14 rounded-full bg-paper-raised border border-ink/10 shadow-lg flex items-center justify-center text-ink">
+                    {project.icon}
+                  </div>
+                </button>
               </div>
             ))}
           </div>
@@ -322,144 +317,111 @@ export function Projects() {
       <AnimatePresence>
         {selectedProject && (
           <motion.div
-            initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-            animate={{ opacity: 1, backdropFilter: 'blur(20px)' }}
-            exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-            transition={{ duration: 0.5 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4 }}
             className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 lg:p-8"
+            role="dialog"
+            aria-modal="true"
+            aria-label={selectedProject.title}
           >
-            {/* Modal Backdrop */}
-            <div 
-              className="absolute inset-0 bg-sulva-black/60" 
-              onClick={() => setSelectedProject(null)}
-            />
+            <div className="absolute inset-0 bg-ink/40 backdrop-blur-md" onClick={() => setSelectedProject(null)} />
 
-            {/* Modal Content Container */}
             <motion.div
-              initial={{ opacity: 0, y: 100, scale: 0.95 }}
+              initial={{ opacity: 0, y: 60, scale: 0.97 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 50, scale: 0.95 }}
-              transition={{ duration: 0.6, ease: [0.2, 0.65, 0.3, 0.9] }}
-              className="relative w-full max-w-6xl h-full max-h-[90vh] bg-sulva-black rounded-3xl overflow-hidden border border-white/10 shadow-[0_30px_100px_rgba(0,0,0,0.8)] flex flex-col z-10"
+              exit={{ opacity: 0, y: 40, scale: 0.97 }}
+              transition={{ duration: 0.5, ease: [0.2, 0.65, 0.3, 0.9] }}
+              className="relative w-full max-w-6xl h-full max-h-[90vh] bg-paper rounded-3xl overflow-hidden border border-ink/10 shadow-[0_40px_120px_rgba(20,20,20,0.35)] flex flex-col z-10"
             >
-              {/* Close Button */}
-              <button 
+              <button
                 onClick={() => setSelectedProject(null)}
-                className="absolute top-6 right-6 z-50 p-3 bg-black/50 hover:bg-white/10 backdrop-blur-xl border border-white/10 rounded-full text-white transition-colors"
+                aria-label="Close"
+                className="absolute top-5 right-5 z-50 p-3 bg-paper-raised/90 backdrop-blur border border-ink/10 rounded-full text-ink transition-colors hover:bg-white"
               >
                 <X className="w-5 h-5" />
               </button>
 
-              {/* Scrollable Area */}
-              <div className="overflow-y-auto h-full smooth-scrollbar">
-                
-                {/* Modal Hero */}
-                <div className="relative h-[50vh] sm:h-[60vh] w-full flex items-end p-8 sm:p-16">
-                  <Image 
-                    src={selectedProject.mockupImage} 
-                    alt={selectedProject.title}
-                    fill
-                    className="object-cover opacity-50 mix-blend-luminosity"
-                    referrerPolicy="no-referrer"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/50 to-transparent" />
-                  
-                  <div className="relative z-10 max-w-3xl">
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.3, duration: 0.8 }}
-                    >
-                      <h4 className="text-sm font-mono text-sulva-purple tracking-widest uppercase mb-4">
-                        {selectedProject.category}
-                      </h4>
-                      <h2 className="text-5xl sm:text-7xl font-medium text-white tracking-tight leading-tight mb-6">
-                        {selectedProject.title}
-                      </h2>
-                    </motion.div>
+              <div className="overflow-y-auto h-full">
+                <div className="p-8 sm:p-14 pb-0">
+                  <h4 className="text-xs uppercase tracking-[0.2em] text-bronze mb-4">{selectedProject.category}</h4>
+                  <h2 className="font-display text-5xl sm:text-7xl font-medium text-ink tracking-tight leading-tight">
+                    {selectedProject.title}
+                  </h2>
+                  <div className="mt-10 rounded-2xl overflow-hidden border border-ink/10 bg-paper-raised">
+                    <div className="relative aspect-[16/9]">
+                      <Image
+                        src={selectedProject.mockupImage}
+                        alt={`${selectedProject.title} homepage`}
+                        fill
+                        sizes="(min-width: 1024px) 70vw, 95vw"
+                        className="object-cover object-top"
+                      />
+                    </div>
                   </div>
                 </div>
 
-                {/* Modal Layout Grid */}
-                <div className="p-8 sm:p-16 grid grid-cols-1 lg:grid-cols-3 gap-16">
-                  
-                  {/* Left Column: Details */}
-                  <div className="lg:col-span-1 space-y-12">
+                <div className="p-8 sm:p-14 grid grid-cols-1 lg:grid-cols-3 gap-14">
+                  <div className="lg:col-span-1 space-y-10">
                     <div>
-                      <h4 className="text-xs text-sulva-white-warm/50 font-mono uppercase tracking-widest mb-4">Project Mission</h4>
-                      <p className="text-lg text-white font-light leading-relaxed">{selectedProject.mission}</p>
+                      <h4 className="text-xs text-ink/50 uppercase tracking-[0.2em] mb-3">Mission</h4>
+                      <p className="text-lg text-ink leading-relaxed">{selectedProject.mission}</p>
                     </div>
 
                     <div>
-                      <h4 className="text-xs text-sulva-white-warm/50 font-mono uppercase tracking-widest mb-4">Impact Metrics</h4>
-                      <div className="space-y-6">
-                        {Object.entries(selectedProject.metrics).map(([key, value], i) => (
-                          <div key={i} className="pb-4 border-b border-white/5">
-                            <div className="text-3xl font-medium text-white mb-1">{value as string}</div>
-                            <div className="text-sm text-sulva-white-warm/60 uppercase tracking-widest">{key}</div>
+                      <h4 className="text-xs text-ink/50 uppercase tracking-[0.2em] mb-3">At a glance</h4>
+                      <div className="divide-y divide-ink/10 border-y border-ink/10">
+                        {Object.entries(selectedProject.metrics).map(([key, value]) => (
+                          <div key={key} className="py-4 flex items-baseline justify-between gap-4">
+                            <span className="text-sm text-ink/50 uppercase tracking-widest">{key}</span>
+                            <span className="font-display text-xl font-medium text-ink text-right">{value}</span>
                           </div>
                         ))}
                       </div>
                     </div>
 
                     <div>
-                      <h4 className="text-xs text-sulva-white-warm/50 font-mono uppercase tracking-widest mb-4">Tech Stack</h4>
-                      <div className="flex flex-wrap gap-3">
-                        {selectedProject.techStack.map((tech, i) => (
-                          <div key={i} className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full">
-                            <span className="text-sulva-white-warm/70">{tech.icon}</span>
-                            <span className="text-sm text-white font-medium">{tech.name}</span>
+                      <h4 className="text-xs text-ink/50 uppercase tracking-[0.2em] mb-3">Stack</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedProject.techStack.map((tech) => (
+                          <div key={tech.name} className="flex items-center gap-2 px-3.5 py-2 border border-ink/15 rounded-full">
+                            <span className="text-ink/50">{tech.icon}</span>
+                            <span className="text-sm text-ink font-medium">{tech.name}</span>
                           </div>
                         ))}
                       </div>
                     </div>
                   </div>
 
-                  {/* Right Column: Story */}
-                  <div className="lg:col-span-2 space-y-16">
+                  <div className="lg:col-span-2 space-y-12">
                     <div>
-                      <h3 className="text-2xl font-medium text-white mb-6">My Thinking</h3>
-                      <p className="text-xl text-sulva-white-warm/70 font-light leading-relaxed">
-                        {/* @ts-ignore */}
-                        {selectedProject.myThinking}
-                      </p>
-                    </div>
-
-                    {/* Mid-content Img */}
-                    <div className="relative w-full h-[300px] sm:h-[400px] rounded-2xl overflow-hidden glass-panel border border-white/10">
-                       <Image 
-                        src={selectedProject.mockupImage} 
-                        alt="Project detail"
-                        fill
-                        className="object-cover opacity-80"
-                        referrerPolicy="no-referrer"
-                      />
+                      <h3 className="font-display text-2xl font-medium text-ink mb-4">My thinking</h3>
+                      <p className="text-lg text-ink/70 leading-relaxed">{selectedProject.myThinking}</p>
                     </div>
 
                     <div>
-                      <h3 className="text-2xl font-medium text-white mb-6">Design Philosophy & Architecture</h3>
-                      <p className="text-xl text-sulva-white-warm/70 font-light leading-relaxed">
-                        {/* @ts-ignore */}
-                        {selectedProject.designPhilosophy}
-                      </p>
+                      <h3 className="font-display text-2xl font-medium text-ink mb-4">Design &amp; architecture</h3>
+                      <p className="text-lg text-ink/70 leading-relaxed">{selectedProject.designPhilosophy}</p>
                     </div>
 
-                    {/* CTA Area */}
-                    <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row gap-6">
-                      <button className="flex-1 group relative px-8 py-4 bg-white text-sulva-black rounded-full overflow-hidden transition-all duration-500 hover:shadow-[0_0_30px_-5px_rgba(255,255,255,0.3)]">
-                        <span className="relative z-10 font-medium tracking-wide flex items-center justify-center gap-3">
-                          View Live Experience
-                          <ExternalLink className="w-4 h-4" />
-                        </span>
-                      </button>
-                      <button className="flex-1 group relative px-8 py-4 bg-white/5 border border-white/10 hover:border-white/30 rounded-full overflow-hidden transition-all duration-500">
-                        <span className="relative z-10 text-white font-medium tracking-wide flex items-center justify-center gap-3">
-                          Read Case Study
-                          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                        </span>
+                    <div className="pt-8 border-t border-ink/10 flex flex-col sm:flex-row gap-3">
+                      <a
+                        href={whatsappUrl(`Hi Iyiola, I saw ${selectedProject.title} on your portfolio and I'd like something similar built.`)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 flex items-center justify-center gap-3 px-8 py-4 bg-ink text-paper rounded-full font-medium transition-colors hover:bg-black"
+                      >
+                        Build something like this
+                        <ExternalLink className="w-4 h-4" />
+                      </a>
+                      <button
+                        onClick={() => setSelectedProject(null)}
+                        className="flex-1 flex items-center justify-center gap-3 px-8 py-4 border border-ink/20 hover:border-ink/50 rounded-full text-ink font-medium transition-colors"
+                      >
+                        Back to all work
                       </button>
                     </div>
-
                   </div>
                 </div>
               </div>
@@ -467,7 +429,6 @@ export function Projects() {
           </motion.div>
         )}
       </AnimatePresence>
-
     </>
   );
 }

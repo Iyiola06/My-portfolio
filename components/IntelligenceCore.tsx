@@ -7,7 +7,7 @@ const CoreWrapper = dynamic(() => import('./IntelligenceCoreWrapper'), { ssr: fa
 
 export function IntelligenceCore() {
   return (
-    <section id="thinking" className="relative h-[120vh] bg-sulva-black overflow-hidden flex flex-col items-center justify-center">
+    <section id="thinking" className="relative h-screen min-h-[640px] bg-sulva-black overflow-hidden flex flex-col items-center justify-center">
       <div className="absolute inset-0 z-0 opacity-80 mix-blend-screen">
         <CoreWrapper />
       </div>
@@ -42,8 +42,6 @@ export function IntelligenceCore() {
         </motion.p>
       </div>
 
-      {/* Atmospheric gradient at bottom to transition smoothly into contact */}
-      <div className="absolute bottom-0 left-0 w-full h-48 bg-gradient-to-t from-sulva-black to-transparent pointer-events-none z-20" />
     </section>
   );
 }

@@ -13,6 +13,7 @@ const NAV_LINKS_BY_MODE = {
 export function Navbar() {
   const { mode } = useViewMode();
   const NAV_LINKS = NAV_LINKS_BY_MODE[mode];
+  const light = mode === 'human';
   const { scrollY } = useScroll();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -102,7 +103,9 @@ export function Navbar() {
         <div className={`
           relative flex items-center justify-between w-full max-w-7xl transition-all duration-700 ease-[0.2,0.65,0.3,0.9]
           ${scrolled 
-            ? 'px-6 py-4 bg-white/[0.04] backdrop-blur-2xl rounded-3xl border border-white/[0.08] shadow-[0_10px_40px_rgba(0,0,0,0.2)]' 
+            ? light
+              ? 'px-6 py-4 bg-paper/85 backdrop-blur-2xl rounded-3xl border border-ink/10 shadow-[0_10px_40px_rgba(20,20,20,0.08)]'
+              : 'px-6 py-4 bg-white/[0.04] backdrop-blur-2xl rounded-3xl border border-white/[0.08] shadow-[0_10px_40px_rgba(0,0,0,0.2)]' 
             : 'px-2 py-0 bg-transparent border-transparent'}
         `}>
           
@@ -111,7 +114,7 @@ export function Navbar() {
             onClick={scrollToTop}
             className="group relative z-20 flex items-center outline-none"
           >
-            <span className="text-[#F5F5F7] font-medium tracking-[0.15em] text-[13px] md:text-[14px] transition-all duration-500 group-hover:text-white group-hover:-translate-y-[1px] uppercase">
+            <span className={`${light ? 'text-ink' : 'text-[#F5F5F7] group-hover:text-white'} font-medium tracking-[0.12em] sm:tracking-[0.15em] text-[12px] sm:text-[13px] md:text-[14px] transition-all duration-500 group-hover:-translate-y-[1px] uppercase`}>
               Iyiola Ogunjobi
             </span>
           </button>
@@ -125,14 +128,16 @@ export function Navbar() {
                 onMouseEnter={() => setHoveredLink(link)}
                 className={`
                   relative text-[13px] font-medium tracking-wide transition-all duration-500 outline-none
-                  ${hoveredLink === link ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]' : hoveredLink ? 'text-white/20' : 'text-white/70'}
+                  ${light
+                    ? hoveredLink === link ? 'text-ink' : hoveredLink ? 'text-ink/30' : 'text-ink/70'
+                    : hoveredLink === link ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]' : hoveredLink ? 'text-white/20' : 'text-white/70'}
                 `}
               >
                 {link}
                 {hoveredLink === link ? (
                   <motion.div
                     layoutId="navbar-indicator"
-                    className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-1 h-1 bg-white/70 rounded-full"
+                    className={`absolute -bottom-2 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full ${light ? 'bg-ink/70' : 'bg-white/70'}`}
                     transition={{ type: 'spring', bounce: 0.1, duration: 0.6 }}
                   />
                 ) : activeSection === link && !hoveredLink ? (
@@ -151,9 +156,9 @@ export function Navbar() {
             <ModeToggle id="desktop" />
             <button 
               onClick={() => scrollToSection('contact')}
-              className="relative px-6 py-2.5 bg-white/[0.02] overflow-hidden rounded-full border border-sulva-gold/20 backdrop-blur-md transition-all duration-500 hover:border-sulva-gold/40 hover:bg-white/[0.06] hover:scale-[1.02] group outline-none"
+              className={`relative px-6 py-2.5 overflow-hidden rounded-full transition-all duration-500 hover:scale-[1.02] group outline-none ${light ? 'bg-ink hover:bg-black' : 'bg-white/[0.02] border border-sulva-gold/20 backdrop-blur-md hover:border-sulva-gold/40 hover:bg-white/[0.06]'}`}
             >
-              <span className="relative z-10 text-[12px] font-semibold tracking-widest text-[#F5F5F7] transition-colors duration-500 uppercase">
+              <span className={`relative z-10 text-[12px] font-semibold tracking-widest transition-colors duration-500 uppercase ${light ? 'text-paper' : 'text-[#F5F5F7]'}`}>
                 Work With Me
               </span>
             </button>
@@ -163,7 +168,8 @@ export function Navbar() {
           <div className="lg:hidden relative z-50 flex items-center gap-3">
             <ModeToggle id="mobile" />
           <button 
-            className="relative z-50 p-2 -mr-2 outline-none mix-blend-difference"
+            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+            className="relative z-50 p-2 -mr-2 outline-none"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             <div className="w-[22px] h-[10px] flex flex-col justify-between items-end">
@@ -173,7 +179,7 @@ export function Navbar() {
                     y: mobileMenuOpen ? 5 : 0,
                     width: mobileMenuOpen ? '22px' : '22px'
                 }}
-                className="w-full h-[1px] bg-[#F5F5F7] origin-center transition-all duration-500 ease-[0.2,0.65,0.3,0.9]"
+                className={`w-full h-[1.5px] ${light ? 'bg-ink' : 'bg-[#F5F5F7]'} origin-center transition-all duration-500 ease-[0.2,0.65,0.3,0.9]`}
               />
               <motion.span 
                 animate={{ 
@@ -181,7 +187,7 @@ export function Navbar() {
                     y: mobileMenuOpen ? -4 : 0,
                     width: mobileMenuOpen ? '22px' : '14px'
                 }}
-                className="h-[1px] bg-[#F5F5F7] origin-center transition-all duration-500 ease-[0.2,0.65,0.3,0.9]"
+                className={`h-[1.5px] ${light ? 'bg-ink' : 'bg-[#F5F5F7]'} origin-center transition-all duration-500 ease-[0.2,0.65,0.3,0.9]`}
               />
             </div>
           </button>
@@ -197,7 +203,7 @@ export function Navbar() {
             animate={{ opacity: 1, backdropFilter: 'blur(30px)' }}
             exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
             transition={{ duration: 0.8, ease: [0.2, 0.65, 0.3, 0.9] }}
-            className="fixed inset-0 z-40 bg-sulva-black/70 flex flex-col items-center justify-center"
+            className={`fixed inset-0 z-40 flex flex-col items-center justify-center ${light ? 'bg-paper/90' : 'bg-sulva-black/70'}`}
           >
             <div className="flex flex-col items-center justify-center space-y-10 w-full px-6">
               {NAV_LINKS.map((link, i) => (
@@ -208,7 +214,7 @@ export function Navbar() {
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.6, delay: 0.1 + i * 0.05, ease: [0.2, 0.65, 0.3, 0.9] }}
                   onClick={() => scrollToSection(link)}
-                  className="text-4xl sm:text-5xl font-light tracking-tight text-[#F5F5F7] hover:text-white transition-colors outline-none"
+                  className={`text-4xl sm:text-5xl font-light tracking-tight transition-colors outline-none ${light ? 'text-ink/80 hover:text-ink' : 'text-[#F5F5F7] hover:text-white'}`}
                 >
                   {link}
                 </motion.button>
@@ -220,9 +226,9 @@ export function Navbar() {
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.6, delay: 0.4, ease: [0.2, 0.65, 0.3, 0.9] }}
                 onClick={() => scrollToSection('contact')}
-                className="mt-12 group relative px-10 py-4 bg-white/5 border border-sulva-gold/20 rounded-full overflow-hidden transition-all duration-500 hover:border-sulva-gold/50 hover:bg-white/10 outline-none"
+                className={`mt-12 group relative px-10 py-4 rounded-full overflow-hidden transition-all duration-500 outline-none ${light ? 'bg-ink' : 'bg-white/5 border border-sulva-gold/20 hover:border-sulva-gold/50 hover:bg-white/10'}`}
               >
-                <span className="relative z-10 text-[13px] font-medium tracking-[0.2em] text-[#F5F5F7] uppercase">
+                <span className={`relative z-10 text-[13px] font-medium tracking-[0.2em] uppercase ${light ? 'text-paper' : 'text-[#F5F5F7]'}`}>
                   Work With Me
                 </span>
               </motion.button>
