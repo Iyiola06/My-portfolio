@@ -9,8 +9,11 @@ import { IntelligenceCore } from '@/components/IntelligenceCore';
 import { Contact } from '@/components/Contact';
 import { Preloader } from '@/components/Preloader';
 import { Navbar } from '@/components/Navbar';
+import { DevHero, DevStack, DevProjects, DevPrinciples } from '@/components/DevPortfolio';
+import { ViewModeProvider, useViewMode } from '@/lib/view-mode';
 
-export default function Home() {
+function Portfolio() {
+  const { mode } = useViewMode();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -28,11 +31,30 @@ export default function Home() {
         {loading && <Preloader key="preloader" onComplete={() => setLoading(false)} />}
       </AnimatePresence>
       <Navbar />
-      <Hero />
-      <About />
-      <Projects />
-      <IntelligenceCore />
+      {mode === 'human' ? (
+        <>
+          <Hero />
+          <About />
+          <Projects />
+          <IntelligenceCore />
+        </>
+      ) : (
+        <>
+          <DevHero />
+          <DevStack />
+          <DevProjects />
+          <DevPrinciples />
+        </>
+      )}
       <Contact />
     </main>
+  );
+}
+
+export default function Home() {
+  return (
+    <ViewModeProvider>
+      <Portfolio />
+    </ViewModeProvider>
   );
 }

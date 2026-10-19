@@ -2,10 +2,17 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'motion/react';
+import { ModeToggle } from '@/components/ModeToggle';
+import { useViewMode } from '@/lib/view-mode';
 
-const NAV_LINKS = ['Home', 'About', 'Vision', 'Projects', 'Thinking', 'Contact'];
+const NAV_LINKS_BY_MODE = {
+  human: ['Home', 'About', 'Vision', 'Projects', 'Thinking', 'Contact'],
+  dev: ['Home', 'Stack', 'Projects', 'Principles', 'Contact'],
+};
 
 export function Navbar() {
+  const { mode } = useViewMode();
+  const NAV_LINKS = NAV_LINKS_BY_MODE[mode];
   const { scrollY } = useScroll();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -139,8 +146,9 @@ export function Navbar() {
             ))}
           </div>
 
-          {/* RIGHT: CTA (Desktop) */}
-          <div className="hidden lg:block z-20">
+          {/* RIGHT: Mode toggle + CTA (Desktop) */}
+          <div className="hidden lg:flex items-center gap-4 z-20">
+            <ModeToggle id="desktop" />
             <button 
               onClick={() => scrollToSection('contact')}
               className="relative px-6 py-2.5 bg-white/[0.02] overflow-hidden rounded-full border border-sulva-gold/20 backdrop-blur-md transition-all duration-500 hover:border-sulva-gold/40 hover:bg-white/[0.06] hover:scale-[1.02] group outline-none"
@@ -151,9 +159,11 @@ export function Navbar() {
             </button>
           </div>
 
-          {/* MOBILE: Hamburger */}
+          {/* MOBILE: Mode toggle + Hamburger */}
+          <div className="lg:hidden relative z-50 flex items-center gap-3">
+            <ModeToggle id="mobile" />
           <button 
-            className="lg:hidden relative z-50 p-2 -mr-2 outline-none mix-blend-difference"
+            className="relative z-50 p-2 -mr-2 outline-none mix-blend-difference"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             <div className="w-[22px] h-[10px] flex flex-col justify-between items-end">
@@ -175,6 +185,7 @@ export function Navbar() {
               />
             </div>
           </button>
+          </div>
         </div>
       </motion.nav>
 
