@@ -26,7 +26,7 @@ function Portfolio() {
   }, [loading]);
 
   return (
-    <main className="bg-sulva-black min-h-screen">
+    <main className={`min-h-screen ${mode === 'human' ? 'bg-paper text-ink' : 'bg-sulva-black text-white'}`}>
       <AnimatePresence mode="wait">
         {loading && <Preloader key="preloader" onComplete={() => setLoading(false)} />}
       </AnimatePresence>

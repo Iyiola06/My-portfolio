@@ -1,110 +1,75 @@
 'use client';
 
-import { motion, useScroll, useTransform } from 'motion/react';
-import { useRef } from 'react';
+import { motion } from 'motion/react';
+
+const EASE = [0.2, 0.65, 0.3, 0.9] as const;
+
+const STATS = [
+  { label: 'Experience', value: '10+ Years', detail: 'Engineering digital products' },
+  { label: 'Shipped', value: '10 Products', detail: 'Live platforms across education, commerce, media and events' },
+  { label: 'Focus', value: 'Intelligence', detail: 'AI-driven infrastructure systems' },
+];
 
 export function About() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"]
-  });
-
-  const statementY = useTransform(scrollYProgress, [0, 1], [100, -100]);
-  const statsY = useTransform(scrollYProgress, [0, 1], [150, -50]);
-  const bgOpacity = useTransform(scrollYProgress, [0, 0.5, 1], [0, 1, 0]);
-
   return (
-    <section id="about" ref={containerRef} className="relative min-h-screen bg-sulva-black py-32 overflow-hidden flex items-center">
-      {/* Background Atmosphere */}
-      <motion.div 
-        className="absolute inset-0 z-0 pointer-events-none"
-        style={{ opacity: bgOpacity }}
-      >
-        <div className="absolute top-[30%] left-[20%] w-[40%] h-[40%] rounded-full bg-white/5 blur-[100px]" />
-        <div className="absolute top-[50%] right-[10%] w-[30%] h-[30%] rounded-full bg-sulva-purple/5 blur-[120px]" />
-      </motion.div>
+    <section id="about" className="relative bg-paper py-28 sm:py-36">
+      <div className="w-full max-w-7xl mx-auto px-6 sm:px-12 lg:px-16">
+        <div className="flex items-center gap-2 mb-10">
+          <span className="w-1.5 h-1.5 rounded-full bg-sulva-gold" />
+          <span className="text-sm text-ink/60">About</span>
+        </div>
 
-      <div className="w-full max-w-7xl mx-auto px-6 sm:px-12 lg:px-24 xl:px-8 z-10 relative">
-        <div className="flex flex-col lg:flex-row gap-24 lg:gap-16">
-          
-          {/* Left Side: Typography */}
-          <div className="w-full lg:w-3/5">
-            <motion.h2 
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-sans font-medium tracking-tight leading-[1.1] text-white"
-              style={{ y: statementY }}
+        <div className="grid lg:grid-cols-[1.4fr_1fr] gap-16 lg:gap-24">
+          <div>
+            <motion.h2
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-80px' }}
+              transition={{ duration: 1, ease: EASE }}
+              className="font-display text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-[1.08] text-ink"
             >
-              Technology Should Work For People, <span className="text-sulva-white-warm/70">Reliably</span> And Beautifully.
+              <span className="font-light">Technology should work for people, </span>
+              <span className="font-semibold text-bronze">reliably and beautifully.</span>
             </motion.h2>
 
             <motion.div
               id="vision"
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.2 }}
-              viewport={{ once: true, margin: "-100px" }}
-              className="mt-16 sm:mt-24 max-w-xl space-y-8"
+              viewport={{ once: true, margin: '-80px' }}
+              transition={{ duration: 1, delay: 0.15, ease: EASE }}
+              className="mt-12 max-w-xl space-y-6 text-lg text-ink/70 leading-relaxed"
             >
-              <p className="text-lg sm:text-xl text-sulva-white-warm/80 font-light leading-relaxed">
-                 My philosophy is simple: technology should extend human intention. Good systems take more than code. They take sound architecture, honest engineering and a clear understanding of the people who use them.
+              <p>
+                My philosophy is simple: technology should extend human intention. Good systems take more than code. They
+                take sound architecture, honest engineering and a clear understanding of the people who use them.
               </p>
-              <p className="text-lg sm:text-xl text-sulva-white-warm/80 font-light leading-relaxed">
-                Through Sulva Tech, I build AI-driven products that hold up against global standards, from learning platforms and storefronts to newsrooms and event systems, made in Africa for the world.
+              <p>
+                Through Sulva Tech, I build AI-driven products that hold up against global standards, from learning
+                platforms and storefronts to newsrooms and event systems, made in Africa for the world.
               </p>
             </motion.div>
           </div>
 
-          {/* Right Side: Floating Metrics / Glass Panels */}
-          <div className="w-full lg:w-2/5 flex flex-col items-center lg:items-end justify-center relative mt-16 lg:mt-0">
-            <motion.div 
-              className="w-full max-w-sm space-y-6"
-              style={{ y: statsY }}
-            >
-              {/* Stat 1 */}
-              <motion.div 
-                initial={{ opacity: 0, x: 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8 }}
+          <div className="flex flex-col gap-4 lg:pt-4">
+            {STATS.map((stat, i) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="glass-panel p-8 rounded-2xl relative overflow-hidden group"
+                transition={{ duration: 0.8, delay: i * 0.1, ease: EASE }}
+                className="rounded-2xl border border-ink/10 bg-paper-raised p-7 transition-colors hover:border-ink/25"
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                <div className="text-sm font-mono text-sulva-white-warm/50 mb-2 uppercase tracking-widest">Experience</div>
-                <div className="text-4xl sm:text-5xl font-medium text-white tracking-tight">10+ Years</div>
-                <div className="mt-2 text-sm text-sulva-white-warm/70">Engineering Digital Excellence</div>
+                <div className="flex items-center justify-between text-xs uppercase tracking-[0.2em] text-ink/50 mb-3">
+                  {stat.label}
+                  <span className="w-1.5 h-1.5 rounded-full bg-sulva-gold" />
+                </div>
+                <div className="font-display text-4xl font-medium tracking-tight text-ink">{stat.value}</div>
+                <div className="mt-2 text-sm text-ink/60">{stat.detail}</div>
               </motion.div>
-
-              {/* Stat 2 */}
-              <motion.div 
-                initial={{ opacity: 0, x: 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, delay: 0.1 }}
-                viewport={{ once: true }}
-                className="glass-panel p-8 rounded-2xl relative overflow-hidden group ml-0 lg:-ml-12"
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-sulva-gold/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                <div className="text-sm font-mono text-sulva-white-warm/50 mb-2 uppercase tracking-widest">Shipped</div>
-                <div className="text-4xl sm:text-5xl font-medium text-white tracking-tight">10 Products</div>
-                <div className="mt-2 text-sm text-sulva-white-warm/70">Live platforms across education, commerce, media and events</div>
-              </motion.div>
-
-               {/* Stat 3 */}
-              <motion.div 
-                initial={{ opacity: 0, x: 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                viewport={{ once: true }}
-                className="glass-panel p-8 rounded-2xl relative overflow-hidden group ml-0 lg:ml-8"
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-sulva-purple/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                <div className="text-sm font-mono text-sulva-white-warm/50 mb-2 uppercase tracking-widest">Focus</div>
-                <div className="text-4xl sm:text-5xl font-medium text-white tracking-tight">Intelligence</div>
-                <div className="mt-2 text-sm text-sulva-white-warm/70">AI-Driven Infrastructure Systems</div>
-              </motion.div>
-
-            </motion.div>
+            ))}
           </div>
-
         </div>
       </div>
     </section>

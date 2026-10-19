@@ -1,5 +1,9 @@
 import type {Metadata} from 'next';
+import { Inter, Space_Grotesk } from 'next/font/google';
 import './globals.css';
+
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' });
+const display = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'], variable: '--font-display-face', display: 'swap' });
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://iyiola.sulvatech.com'),
@@ -54,11 +58,11 @@ import { Schema } from '@/components/Schema';
 
 export default function RootLayout({children}: {children: React.ReactNode}) {
   return (
-    <html lang="en" className="dark antialiased text-white bg-[#050505]">
+    <html lang="en" className={`${inter.variable} ${display.variable} antialiased`}>
       <head>
         <Schema />
       </head>
-      <body className="font-sans min-h-screen selection:bg-purple-500/30 selection:text-white" suppressHydrationWarning>
+      <body className="font-sans min-h-screen selection:bg-sulva-gold/40 selection:text-ink" suppressHydrationWarning>
         {children}
       </body>
     </html>
