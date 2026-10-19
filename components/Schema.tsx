@@ -6,8 +6,8 @@ export const Schema = () => {
     "@type": "Person",
     "name": "Iyiola Ogunjobi",
     "url": "https://iyiola.sulvatech.com",
-    "jobTitle": "Visionary Builder & Technologist",
-    "description": "Iyiola Ogunjobi is a founder, technologist, and creative systems thinker focused on building intelligent digital experiences and futuristic products.",
+    "jobTitle": "Founder, Sulva Tech",
+    "description": "Iyiola Ogunjobi is the founder of Sulva Tech, building AI-powered platforms for education, commerce, media and events across Africa.",
     "email": "iyiola@sulvatech.com",
     "telephone": "+2347068495149",
     "sameAs": [

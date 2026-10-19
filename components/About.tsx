@@ -34,7 +34,7 @@ export function About() {
               className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-sans font-medium tracking-tight leading-[1.1] text-white"
               style={{ y: statementY }}
             >
-              Technology Should Feel <span className="text-sulva-white-warm/70">Intelligent,</span> Human, And Timeless.
+              Technology Should Work For People, <span className="text-sulva-white-warm/70">Reliably</span> And Beautifully.
             </motion.h2>
 
             <motion.div
@@ -46,10 +46,10 @@ export function About() {
               className="mt-16 sm:mt-24 max-w-xl space-y-8"
             >
               <p className="text-lg sm:text-xl text-sulva-white-warm/80 font-light leading-relaxed">
-                 My philosophy is simple: technology should feel like an extension of human intention. Building scalable systems and sophisticated infrastructure requires more than code - it demands a visionary understanding of macro-level architecture and human emotion.
+                 My philosophy is simple: technology should extend human intention. Good systems take more than code. They take sound architecture, honest engineering and a clear understanding of the people who use them.
               </p>
               <p className="text-lg sm:text-xl text-sulva-white-warm/80 font-light leading-relaxed">
-                I engineer premium, AI-driven experiences that position African innovation at the apex of global technological competition. For me, it is not just about solving today's problems; it's about anticipating the needs of a fundamentally transformed future.
+                Through Sulva Tech, I build AI-driven products that hold up against global standards, from learning platforms and storefronts to newsrooms and event systems, made in Africa for the world.
               </p>
             </motion.div>
           </div>
@@ -83,9 +83,9 @@ export function About() {
                 className="glass-panel p-8 rounded-2xl relative overflow-hidden group ml-0 lg:-ml-12"
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-sulva-gold/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                <div className="text-sm font-mono text-sulva-white-warm/50 mb-2 uppercase tracking-widest">Global Reach</div>
-                <div className="text-4xl sm:text-5xl font-medium text-white tracking-tight">African DNA</div>
-                <div className="mt-2 text-sm text-sulva-white-warm/70">Global Technological Standard</div>
+                <div className="text-sm font-mono text-sulva-white-warm/50 mb-2 uppercase tracking-widest">Shipped</div>
+                <div className="text-4xl sm:text-5xl font-medium text-white tracking-tight">10 Products</div>
+                <div className="mt-2 text-sm text-sulva-white-warm/70">Live platforms across education, commerce, media and events</div>
               </motion.div>
 
                {/* Stat 3 */}
